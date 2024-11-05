@@ -13,6 +13,8 @@ Run `deno fmt` to format the code.
 
 Run `deno lint` to lint the code.
 
+Run `deno check *.ts *tsx` to type-check the code.
+
 ---
 
 Developed with <3 by [**@EthanThatOneKid**](https://etok.codes/)
