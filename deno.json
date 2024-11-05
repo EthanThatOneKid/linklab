@@ -1,10 +1,13 @@
 {
   "lock": false,
   "tasks": {
-    "start": "deno run -A main.tsx"
+    "start": "deno run -A --unstable-kv --env main.tsx",
+    "molt": "deno run -A jsr:@molt/cli -w"
   },
   "imports": {
-    "@fartlabs/htx": "jsr:@fartlabs/htx@^0.0.6"
+    "@deno/kv-oauth": "jsr:@deno/kv-oauth@^0.11.0",
+    "@fartlabs/htx": "jsr:@fartlabs/htx@^0.0.7",
+    "@std/http": "jsr:@std/http@^1.0.9"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
