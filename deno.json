@@ -1,0 +1,13 @@
+{
+  "lock": false,
+  "tasks": {
+    "start": "deno run -A main.tsx"
+  },
+  "imports": {
+    "@fartlabs/htx": "jsr:@fartlabs/htx@^0.0.6"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "@fartlabs/htx"
+  }
+}
