@@ -1,6 +1,6 @@
-# Linkland
+# Linklab
 
-Linkslab is a Linktree clone powered by Deno Deploy.
+Linklab is a Linktree clone powered by Deno Deploy.
 
 ## Development
 
