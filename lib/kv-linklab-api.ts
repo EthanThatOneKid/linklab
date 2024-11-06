@@ -3,9 +3,9 @@ import type { Helpers } from "@deno/kv-oauth";
 import type { Profile } from "#/lib/profile.ts";
 
 /**
- * makeLinklabRoutes makes an array of Routes for Linklab.
+ * makeLinklabAPIRoutes makes an array of Routes for Linklab.
  */
-export function makeLinklabRoutes(
+export function makeLinklabAPIRoutes(
   { /* signIn, handleCallback, signOut, */ getSessionId }: Helpers,
   _kv: Deno.Kv,
 ): Route[] {

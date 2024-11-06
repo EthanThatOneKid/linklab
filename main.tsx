@@ -1,7 +1,7 @@
 import type { Route } from "@std/http";
 import { route } from "@std/http";
 import { githubOAuthHelpers, kv, makeKvOAuthRoutes } from "#/lib/kv-oauth.ts";
-import { makeLinklabRoutes } from "#/lib/linklab-kv.ts";
+import { makeLinklabAPIRoutes } from "#/lib/kv-linklab-api.ts";
 import { LandingPage } from "#/components/landing_page/landing_page.tsx";
 import { ProfilePage } from "#/components/profile_page/profile_page.tsx";
 import { fakeProfile } from "./fake_profile.ts";
@@ -18,7 +18,7 @@ import { fakeProfile } from "./fake_profile.ts";
 
 export const routes: Route[] = [
   ...makeKvOAuthRoutes(githubOAuthHelpers),
-  ...makeLinklabRoutes(githubOAuthHelpers, kv),
+  ...makeLinklabAPIRoutes(githubOAuthHelpers, kv),
   {
     pattern: new URLPattern({ pathname: "/" }),
     async handler(request) {
