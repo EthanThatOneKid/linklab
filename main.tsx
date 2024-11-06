@@ -11,8 +11,9 @@ import {
   LABEL,
   SECTION,
 } from "@fartlabs/htx";
-import type { Profile } from "./lib/profile.ts";
-import { githubOAuthHelpers, makeKvOAuthRoutes } from "./kv-oauth.ts";
+import type { Profile } from "#/lib/profile.ts";
+import { githubOAuthHelpers, kv, makeKvOAuthRoutes } from "#/lib/kv-oauth.ts";
+import { makeLinklabRoutes } from "#/lib/linklab-kv.ts";
 
 // Linklab is a Linktree clone.
 //
@@ -25,8 +26,17 @@ import { githubOAuthHelpers, makeKvOAuthRoutes } from "./kv-oauth.ts";
 //
 
 const fakeProfile: Profile = {
+  id: "abc123",
   title: "EthanThatOneKid",
+  owner: {
+    githubID: "123",
+    githubLogin: "EthanThatOneKid",
+  },
   links: [
+    {
+      title: "Homepage",
+      url: "https://etok.me/",
+    },
     {
       title: "GitHub",
       url: "https://github.com/EthanThatOneKid",
@@ -36,12 +46,14 @@ const fakeProfile: Profile = {
 
 export const routes: Route[] = [
   ...makeKvOAuthRoutes(githubOAuthHelpers),
+  ...makeLinklabRoutes(githubOAuthHelpers, kv),
   {
     pattern: new URLPattern({ pathname: "/" }),
-    handler(_request) {
-      // Check if user is signed via user not undefined.
+    async handler(request) {
+      // Check if user is signed in.
+      const sessionID = await githubOAuthHelpers.getSessionId(request);
       return new Response(
-        <LandingPage />,
+        sessionID !== undefined ? "You are signed in" : <LandingPage />,
         {
           headers: new Headers({
             "Content-Type": "text/html",
@@ -81,6 +93,10 @@ if (import.meta.main) {
 }
 
 function LandingPage() {
+  // TODO: Pass user properties to landing page.
+  // E.g. Render anchor tag to profile page if user is signed in.
+  //
+
   return (
     <HTML>
       <BODY>
