@@ -1,7 +1,10 @@
 import type { Route } from "@std/http";
 import { route } from "@std/http";
 import { githubOAuthHelpers, kv, makeKvOAuthRoutes } from "#/lib/kv-oauth.ts";
-import { makeLinklabAPIRoutes } from "#/lib/kv-linklab-api.ts";
+import {
+  getUserByGitHubSessionID,
+  makeLinklabAPIRoutes,
+} from "#/lib/kv-linklab-api.ts";
 import { LandingPage } from "#/components/landing_page/landing_page.tsx";
 import { ProfilePage } from "#/components/profile_page/profile_page.tsx";
 import { fakeProfile } from "./fake_profile.ts";
@@ -22,15 +25,22 @@ export const routes: Route[] = [
   {
     pattern: new URLPattern({ pathname: "/" }),
     async handler(request) {
-      // Check if user is signed in.
       const sessionID = await githubOAuthHelpers.getSessionId(request);
+      if (sessionID === undefined) {
+        return new Response(
+          <LandingPage />,
+          { headers: new Headers({ "Content-Type": "text/html" }) },
+        );
+      }
+
+      const user = await getUserByGitHubSessionID(kv, sessionID);
+      if (user.value === null) {
+        return new Response("Internal server error", { status: 500 });
+      }
+
       return new Response(
-        sessionID !== undefined ? "You are signed in" : <LandingPage />,
-        {
-          headers: new Headers({
-            "Content-Type": "text/html",
-          }),
-        },
+        <LandingPage user={user.value} />,
+        { headers: new Headers({ "Content-Type": "text/html" }) },
       );
     },
   },
@@ -48,11 +58,7 @@ export const routes: Route[] = [
 
       return new Response(
         <ProfilePage profile={fakeProfile} />,
-        {
-          headers: new Headers({
-            "Content-Type": "text/html",
-          }),
-        },
+        { headers: new Headers({ "Content-Type": "text/html" }) },
       );
     },
   },

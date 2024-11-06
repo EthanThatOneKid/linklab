@@ -1,5 +1,10 @@
 import { BUTTON, FORM, H1, H2, SECTION } from "@fartlabs/htx";
+import type { User } from "#/lib/user.ts";
 import { Layout } from "#/components/layout.tsx";
+
+export interface LandingPageProps {
+  user?: User;
+}
 
 export function LandingPage() {
   // TODO: Pass user properties to landing page.

@@ -1,6 +1,7 @@
 import type { Route } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
 import type { Profile } from "#/lib/profile.ts";
+import type { User } from "#/lib/user.ts";
 
 /**
  * makeLinklabAPIRoutes makes an array of Routes for Linklab.
@@ -32,7 +33,32 @@ export function makeLinklabAPIRoutes(
 }
 
 /**
- * kvKeyPrefixLinklab is the top-level prefix for Linklab Deno Kv keys.
+ * getUserByGitHubSessionID gets a Linklab user by GitHub session ID.
+ */
+export async function getUserByGitHubSessionID(
+  kv: Deno.Kv,
+  sessionID: string,
+): Promise<Deno.KvEntryMaybe<User>> {
+  const githubUserRequest = await fetch(
+    "https://api.github.com/user",
+    { headers: new Headers({ Authorization: `Bearer ${sessionID}` }) },
+  );
+  const githubUser = await githubUserRequest.json();
+  console.log("GitHub user:", githubUser);
+  // GitHub user: {
+  //   message: "Bad credentials",
+  //   documentation_url: "https://docs.github.com/rest",
+  //   status: "401"
+  // }
+  // TypeError: Cannot read properties of undefined (reading 'toString')
+  //
+
+  const githubUserID = githubUser.id.toString();
+  return getUserByGitHubUserID(kv, githubUserID);
+}
+
+/**
+ * kvKeyPrefixLinklab is the top-level prefix Deno Kv key for this program.
  */
 export const kvKeyPrefixLinklab = "linklab";
 
@@ -78,4 +104,37 @@ export function deleteProfileByID(
   id: string,
 ): Promise<void> {
   return kv.delete([kvKeyPrefixLinklab, kvKeyPrefixProfile, id]);
+}
+
+/**
+ * getUserByGitHubUserID gets a Linklab user by GitHub user ID.
+ */
+export function getUserByGitHubUserID(
+  kv: Deno.Kv,
+  githubUserID: string,
+): Promise<Deno.KvEntryMaybe<User>> {
+  return kv.get<User>([kvKeyPrefixLinklab, kvKeyPrefixUser, githubUserID]);
+}
+
+/**
+ * setUserByGitHubUserID sets a Linklab user by GitHub user ID.
+ */
+export function setUserByGitHubUserID(
+  kv: Deno.Kv,
+  user: User,
+): Promise<Deno.KvCommitResult> {
+  return kv.set(
+    [kvKeyPrefixLinklab, kvKeyPrefixUser, user.githubID],
+    user,
+  );
+}
+
+/**
+ * deleteUserByGitHubUserID deletes a Linklab user by GitHub user ID.
+ */
+export function deleteUserByGitHubUserID(
+  kv: Deno.Kv,
+  githubUserID: string,
+): Promise<void> {
+  return kv.delete([kvKeyPrefixLinklab, kvKeyPrefixUser, githubUserID]);
 }

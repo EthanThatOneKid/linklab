@@ -1,9 +1,13 @@
 import { DIV, H1 } from "@fartlabs/htx";
 import { renderStyle as css } from "@fartlabs/htx/render";
+import type { Profile } from "#/lib/profile.ts";
 import { Layout } from "#/components/layout.tsx";
-import { Profile } from "#/lib/profile.ts";
 
-export function ProfilePage(props: { profile: Profile }) {
+export interface ProfilePageProps {
+  profile: Profile;
+}
+
+export function ProfilePage(props: ProfilePageProps) {
   return (
     <Layout>
       <DIV
