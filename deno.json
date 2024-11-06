@@ -7,8 +7,9 @@
   "imports": {
     "#/": "./",
     "@deno/kv-oauth": "jsr:@deno/kv-oauth@^0.11.0",
-    "@fartlabs/htx": "jsr:@fartlabs/htx@^0.0.7",
-    "@std/http": "jsr:@std/http@^1.0.9"
+    "@fartlabs/htx": "jsr:@fartlabs/htx@^0.0.9",
+    "@std/http": "jsr:@std/http@^1.0.9",
+    "@std/text": "jsr:@std/text@^1.0.8"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
