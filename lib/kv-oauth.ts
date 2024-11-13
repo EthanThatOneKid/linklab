@@ -19,7 +19,18 @@ if (
  */
 export const kv = await Deno.openKv(path);
 
-export const githubOAuthHelpers = createHelpers(createGitHubOAuthConfig());
+export const githubOAuthHelpers = createHelpers(
+  createGitHubOAuthConfig(),
+  {
+    cookieOptions: {
+      expires: 60 * 60 * 24 * 7,
+      httpOnly: true,
+    },
+  },
+);
+
+export type OAuthCallbackHandler = (data: OAuthCallbackData) => Promise<void>;
+export type OAuthCallbackData = Awaited<ReturnType<Helpers["handleCallback"]>>;
 
 /**
  * makeKvOAuthRoutes makes an array of Routes.
@@ -29,6 +40,7 @@ export const githubOAuthHelpers = createHelpers(createGitHubOAuthConfig());
  */
 export function makeKvOAuthRoutes(
   { signIn, handleCallback, signOut, getSessionId }: Helpers,
+  fn?: OAuthCallbackHandler,
 ): Route[] {
   return [
     {
@@ -41,8 +53,9 @@ export function makeKvOAuthRoutes(
       pattern: new URLPattern({ pathname: "/callback" }),
       async handler(request) {
         // Return object also includes `accessToken` and `sessionId` properties.
-        const { response } = await handleCallback(request);
-        return response;
+        const handledCallback = await handleCallback(request);
+        await fn?.(handledCallback);
+        return handledCallback.response;
       },
     },
     {

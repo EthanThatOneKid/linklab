@@ -1,13 +1,13 @@
 import type { Route } from "@std/http";
 import { route } from "@std/http";
+import type { OAuthCallbackData } from "#/lib/kv-oauth.ts";
 import { githubOAuthHelpers, kv, makeKvOAuthRoutes } from "#/lib/kv-oauth.ts";
 import {
-  getUserByGitHubSessionID,
-  makeLinklabAPIRoutes,
-} from "#/lib/kv-linklab-api.ts";
-import { LandingPage } from "#/components/landing_page/landing_page.tsx";
-import { ProfilePage } from "#/components/profile_page/profile_page.tsx";
-import { fakeProfile } from "./fake_profile.ts";
+  getUserByGitHubUserID,
+  setGitHubUserIDBySessionID,
+  setUserByGitHubUserID,
+} from "#/lib/kv-linklab.ts";
+import { makeLinklabRoutes } from "#/lib/linklab-api.tsx";
 
 // Linklab is a Linktree clone.
 //
@@ -20,58 +20,42 @@ import { fakeProfile } from "./fake_profile.ts";
 //
 
 export const routes: Route[] = [
-  ...makeKvOAuthRoutes(githubOAuthHelpers),
-  ...makeLinklabAPIRoutes(githubOAuthHelpers, kv),
-  {
-    pattern: new URLPattern({ pathname: "/" }),
-    async handler(request) {
-      const sessionID = await githubOAuthHelpers.getSessionId(request);
-      if (sessionID === undefined) {
-        return new Response(
-          <LandingPage />,
-          { headers: new Headers({ "Content-Type": "text/html" }) },
-        );
-      }
-
-      const user = await getUserByGitHubSessionID(kv, sessionID);
-      if (user.value === null) {
-        return new Response("Internal server error", { status: 500 });
-      }
-
-      return new Response(
-        <LandingPage user={user.value} />,
-        { headers: new Headers({ "Content-Type": "text/html" }) },
-      );
-    },
-  },
-  {
-    pattern: new URLPattern({ pathname: "/profile" }),
-    async handler(request) {
-      // Check if user is signed in.
-      const sessionID = await githubOAuthHelpers.getSessionId(request);
-      if (sessionID === undefined) {
-        return new Response(
-          "You are not signed in",
-          { status: 401 },
-        );
-      }
-
-      return new Response(
-        <ProfilePage profile={fakeProfile} />,
-        { headers: new Headers({ "Content-Type": "text/html" }) },
-      );
-    },
-  },
+  ...makeKvOAuthRoutes(githubOAuthHelpers, handleOAuthCallback),
+  ...makeLinklabRoutes(kv, githubOAuthHelpers),
 ];
 
-export function defaultHandler(_request: Request) {
-  return new Response(
-    "Not found",
-    { status: 404 },
+async function handleOAuthCallback({ sessionId, tokens }: OAuthCallbackData) {
+  // Associate the session ID with the Linklab user.
+  const githubUserRequest = await fetch(
+    "https://api.github.com/user",
+    {
+      headers: new Headers({ Authorization: `Bearer ${tokens.accessToken}` }),
+    },
   );
+  const githubUser = await githubUserRequest.json();
+  const githubUserID = String(githubUser.id);
+  await setGitHubUserIDBySessionID(
+    kv,
+    sessionId,
+    githubUserID,
+    tokens.expiresIn,
+  );
+
+  // Create new user if not exists.
+  const user = await getUserByGitHubUserID(kv, githubUserID);
+  if (user.value === null) {
+    await setUserByGitHubUserID(kv, {
+      githubID: githubUserID,
+      githubLogin: githubUser.login,
+    });
+  }
 }
 
 export const router = route(routes, defaultHandler);
+
+export function defaultHandler(_request: Request) {
+  return new Response("Not found", { status: 404 });
+}
 
 if (import.meta.main) {
   Deno.serve((request) => router(request));
