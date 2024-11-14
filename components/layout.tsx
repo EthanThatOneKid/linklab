@@ -1,9 +1,13 @@
-import { BODY, HTML } from "@fartlabs/htx";
+import { BODY, HTML, LINK, META } from "@fartlabs/htx";
 
 export function Layout(props: { children?: string[] }) {
   return (
     <HTML>
-      <BODY>{(props.children ?? []).join("")}</BODY>
+      <META charset="utf-8" />
+      <LINK rel="stylesheet" href="https://css.fart.tools/fart.css" />
+      <BODY>
+        {(props.children ?? []).join("")}
+      </BODY>
     </HTML>
   );
 }
