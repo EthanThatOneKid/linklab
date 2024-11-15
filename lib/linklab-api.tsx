@@ -2,12 +2,13 @@ import type { Route } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
 import { LandingPage } from "#/components/landing-page/landing-page.tsx";
 import { ProfilePage } from "#/components/profile-page/profile-page.tsx";
+import { UserPage } from "#/components/user-page/user-page.tsx";
 import {
-  getProfileByID,
+  getProfileByProfileID,
+  getProfilesByProfileIDs,
   getUserByGitHubLogin,
   getUserBySessionID,
 } from "#/lib/kv-linklab.ts";
-import { UserPage } from "#/components/user-page/user-page.tsx";
 
 /**
  * makeLinklabRoutes makes an array of Routes for Linklab.
@@ -72,7 +73,7 @@ export function makeProfilePageRoute(
         return new Response("Not found", { status: 404 });
       }
 
-      const profile = await getProfileByID(kv, profileID);
+      const profile = await getProfileByProfileID(kv, profileID);
       if (profile.value === null) {
         return new Response("Not found", { status: 404 });
       }
@@ -133,14 +134,20 @@ export function makeUserPageRoute(
       }
 
       const pageOwner = await getUserByGitHubLogin(kv, login);
-      console.log({ user, pageOwner, login });
       if (pageOwner.value === null) {
         return new Response("Not found", { status: 404 });
       }
 
-      console.log({ pageOwner });
+      const profiles = await getProfilesByProfileIDs(
+        kv,
+        pageOwner.value.ownedProfiles,
+      );
       return new Response(
-        <UserPage user={user.value} pageOwner={pageOwner.value} />,
+        <UserPage
+          user={user.value}
+          pageOwner={pageOwner.value}
+          profiles={profiles}
+        />,
         { headers: new Headers({ "Content-Type": "text/html" }) },
       );
     },

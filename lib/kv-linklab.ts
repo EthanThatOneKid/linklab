@@ -29,9 +29,9 @@ export const kvKeyPrefixGitHubUserIDByGitHubLogin =
   "github-user-id-by-github-login";
 
 /**
- * getProfileByID gets a Linklab profile by profile ID.
+ * getProfileByProfileID gets a Linklab profile by profile ID.
  */
-export function getProfileByID(
+export function getProfileByProfileID(
   kv: Deno.Kv,
   profileID: string,
 ): Promise<Deno.KvEntryMaybe<Profile>> {
@@ -189,4 +189,20 @@ export function deleteUserByGitHubUserID(
     kvKeyPrefixUserByGitHubUserID,
     githubUserID,
   ]);
+}
+
+export function getProfilesByProfileIDs(
+  kv: Deno.Kv,
+  profileIDs: string[],
+): Promise<Profile[]> {
+  return Promise.all(
+    profileIDs.map(async (profileID) => {
+      const profileResult = await getProfileByProfileID(kv, profileID);
+      if (profileResult.value === null) {
+        throw new Error("Profile not found");
+      }
+
+      return profileResult.value;
+    }),
+  );
 }

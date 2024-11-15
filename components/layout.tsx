@@ -9,12 +9,25 @@ import {
   META,
   P,
   SMALL,
+  TITLE,
 } from "@fartlabs/htx";
 
-export function Layout(props: { children?: string[] }) {
+export interface LayoutProps {
+  title?: string;
+  description?: string;
+  children?: string[];
+}
+
+export function Layout(props: LayoutProps) {
   return (
     <HTML>
       <META charset="utf-8" />
+      <LINK rel="icon" href="https://fartlabs.org/fl-logo.pmg" />
+      <TITLE>{props.title ?? "Linklab"}</TITLE>
+      <META
+        name="description"
+        content={props.description ?? "Your link-in-bio page."}
+      />
       <LINK rel="stylesheet" href="https://css.fart.tools/fart.css" />
       <BODY>
         {(props.children ?? []).join("")}
