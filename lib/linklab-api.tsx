@@ -23,7 +23,6 @@ export function makeLandingPageRoute(
     pattern: new URLPattern({ pathname: "/" }),
     async handler(request) {
       const sessionID = await getSessionId(request);
-      console.log({ sessionID });
       if (sessionID === undefined) {
         return new Response(
           <LandingPage />,
@@ -32,7 +31,6 @@ export function makeLandingPageRoute(
       }
 
       const user = await getUserBySessionID(kv, sessionID);
-      console.log({ user });
       if (user.value === null) {
         return new Response("Internal server error", { status: 500 });
       }
