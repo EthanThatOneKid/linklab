@@ -2,6 +2,7 @@
   "lock": false,
   "tasks": {
     "start": "deno run -A --unstable-kv --env main.tsx",
+    "dev": "deno run -A --unstable-kv --env --watch main.tsx",
     "molt": "deno run -A jsr:@molt/cli -w"
   },
   "imports": {
