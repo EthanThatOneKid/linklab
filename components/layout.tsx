@@ -18,15 +18,18 @@ export interface LayoutProps {
   children?: string[];
 }
 
+const defaultPageTitle = "Linklab";
+const defaultPageDescription = "Your link-in-bio page.";
+
 export function Layout(props: LayoutProps) {
   return (
     <HTML>
       <META charset="utf-8" />
-      <LINK rel="icon" href="https://fartlabs.org/fl-logo.pmg" />
-      <TITLE>{props.title ?? "Linklab"}</TITLE>
+      <LINK rel="icon" href="https://fartlabs.org/fl-logo.png" />
+      <TITLE>{props.title ?? defaultPageTitle}</TITLE>
       <META
         name="description"
-        content={props.description ?? "Your link-in-bio page."}
+        content={props.description ?? defaultPageDescription}
       />
       <LINK rel="stylesheet" href="https://css.fart.tools/fart.css" />
       <BODY>
