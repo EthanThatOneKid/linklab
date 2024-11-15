@@ -1,10 +1,10 @@
 import { BUTTON, FORM, INPUT } from "@fartlabs/htx";
 import { renderStyle } from "@fartlabs/htx/render";
+import { ctaStyle } from "#/lib/css/cta.ts";
 
 export function ClaimForm() {
   return (
     <FORM
-      class="claim-form"
       // action="/claim"
       style={renderStyle({
         display: "flex",
@@ -27,18 +27,10 @@ export function ClaimForm() {
       />
       <BUTTON
         type="submit"
-        style={renderStyle({
-          padding: "0.75rem",
-          border: "none",
-          "border-radius": "0.25rem",
-          "background-color": "#c2f732",
-          color: "#0f2f21",
-          cursor: "pointer",
-          "font-weight": "bold",
-        })}
         onclick={handleEvent(
           "event.preventDefault(); alert('Feature coming soon!');",
         )}
+        style={ctaStyle}
       >
         Claim your Linklab
       </BUTTON>

@@ -6,6 +6,7 @@ export const fakeProfile = {
   owner: {
     githubID: "123",
     githubLogin: "EthanThatOneKid",
+    ownedProfiles: [],
   },
   links: [
     {
