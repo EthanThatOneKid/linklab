@@ -1,7 +1,7 @@
 import type { Route } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
-import { LandingPage } from "#/components/landing_page/landing_page.tsx";
-import { ProfilePage } from "#/components/profile_page/profile_page.tsx";
+import { LandingPage } from "#/components/landing-page/landing-page.tsx";
+import { ProfilePage } from "#/components/profile-page/profile-page.tsx";
 import { getProfileByID, getUserBySessionID } from "#/lib/kv-linklab.ts";
 
 /**

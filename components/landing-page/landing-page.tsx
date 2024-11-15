@@ -10,9 +10,9 @@ import {
   SECTION,
   SPAN,
 } from "@fartlabs/htx";
+import { renderStyle } from "@fartlabs/htx/render";
 import type { User } from "#/lib/user.ts";
 import { Layout } from "#/components/layout.tsx";
-import { renderStyle } from "@fartlabs/htx/render";
 
 export interface LandingPageProps {
   user?: User;
