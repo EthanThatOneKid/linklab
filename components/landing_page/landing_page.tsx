@@ -51,6 +51,7 @@ export function LandingPage(props: LandingPageProps) {
           : (
             <DIV>
               <H2>{props.user.githubLogin}, you are signed in.</H2>
+              <SignOutForm />
             </DIV>
           )}
 
@@ -64,6 +65,14 @@ function SignInForm() {
   return (
     <FORM action="/signin">
       <BUTTON type="submit">Sign in with GitHub</BUTTON>
+    </FORM>
+  );
+}
+
+function SignOutForm() {
+  return (
+    <FORM action="/signout">
+      <BUTTON type="submit">Sign out</BUTTON>
     </FORM>
   );
 }
