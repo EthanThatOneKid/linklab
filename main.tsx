@@ -4,6 +4,7 @@ import type { OAuthCallbackData } from "#/lib/kv-oauth.ts";
 import { githubOAuthHelpers, kv, makeKvOAuthRoutes } from "#/lib/kv-oauth.ts";
 import {
   getUserByGitHubUserID,
+  setGitHubUserIDByGitHubLogin,
   setGitHubUserIDBySessionID,
   setUserByGitHubUserID,
 } from "#/lib/kv-linklab.ts";
@@ -49,6 +50,9 @@ async function handleOAuthCallback({ sessionId, tokens }: OAuthCallbackData) {
       githubLogin: githubUser.login,
     });
   }
+
+  // Update the user's GitHub username.
+  await setGitHubUserIDByGitHubLogin(kv, githubUser.login, githubUserID);
 }
 
 export const router = route(routes, defaultHandler);

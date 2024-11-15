@@ -23,6 +23,12 @@ export const kvKeyPrefixGitHubUserIDBySessionID =
 export const kvKeyPrefixUserByGitHubUserID = "user-by-github-user-id";
 
 /**
+ * kvKeyPrefixGitHubUserIDByGitHubLogin is the GitHub user ID by GitHub login prefix for Deno Kv keys.
+ */
+export const kvKeyPrefixGitHubUserIDByGitHubLogin =
+  "github-user-id-by-github-login";
+
+/**
  * getProfileByID gets a Linklab profile by profile ID.
  */
 export function getProfileByID(
@@ -83,6 +89,38 @@ export function getGitHubUserIDBySessionID(
 }
 
 /**
+ * getUserByGitHubLogin gets a Linklab user by GitHub login.
+ */
+export async function getUserByGitHubLogin(
+  kv: Deno.Kv,
+  githubLogin: string,
+): Promise<Deno.KvEntryMaybe<User>> {
+  const githubUserIDResult = await getGitHubUserIDByGitHubLogin(
+    kv,
+    githubLogin,
+  );
+  if (githubUserIDResult.value === null) {
+    return githubUserIDResult;
+  }
+
+  return getUserByGitHubUserID(kv, githubUserIDResult.value);
+}
+
+/**
+ * getGitHubUserIDByGitHubLogin gets a GitHub user ID by GitHub login.
+ */
+export function getGitHubUserIDByGitHubLogin(
+  kv: Deno.Kv,
+  githubLogin: string,
+): Promise<Deno.KvEntryMaybe<string>> {
+  return kv.get<string>([
+    kvKeyPrefixLinklab,
+    kvKeyPrefixGitHubUserIDByGitHubLogin,
+    githubLogin,
+  ]);
+}
+
+/**
  * setGitHubUserIDBySessionID sets a GitHub user ID by session ID.
  */
 export function setGitHubUserIDBySessionID(
@@ -122,6 +160,20 @@ export function setUserByGitHubUserID(
   return kv.set(
     [kvKeyPrefixLinklab, kvKeyPrefixUserByGitHubUserID, user.githubID],
     user,
+  );
+}
+
+/**
+ * setGitHubUserIDByGitHubLogin sets a GitHub user ID by GitHub login.
+ */
+export function setGitHubUserIDByGitHubLogin(
+  kv: Deno.Kv,
+  githubLogin: string,
+  githubUserID: string,
+): Promise<Deno.KvCommitResult> {
+  return kv.set(
+    [kvKeyPrefixLinklab, kvKeyPrefixGitHubUserIDByGitHubLogin, githubLogin],
+    githubUserID,
   );
 }
 
