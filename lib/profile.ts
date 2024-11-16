@@ -6,18 +6,18 @@ import { User } from "#/lib/user.ts";
 export interface Profile {
   id: string;
   owner: User;
-  title: string;
+  title?: string;
   description?: string;
   iconURL?: string;
   colorStyle?: string;
   backgroundStyle?: string;
-  links?: Link[];
+  links?: ProfileLink[];
 }
 
 /**
- * Link is a Linklab link.
+ * ProfileLink is a Linklab link.
  */
-export interface Link {
+export interface ProfileLink {
   title: string;
   url: string;
   iconURL?: string;

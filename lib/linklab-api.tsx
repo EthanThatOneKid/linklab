@@ -8,7 +8,9 @@ import {
   getProfilesByProfileIDs,
   getUserByGitHubLogin,
   getUserBySessionID,
+  setProfileByID,
 } from "#/lib/kv-linklab.ts";
+import { Profile } from "#/lib/profile.ts";
 
 /**
  * makeLinklabRoutes makes an array of Routes for Linklab.
@@ -16,7 +18,7 @@ import {
 export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
   return [
     makeLandingPageRoute(kv, helpers),
-    makePostProfileRoute(kv, helpers),
+    makeProfileRoute(kv, helpers),
     makeUserPageRoute(kv, helpers),
   ];
 }
@@ -86,13 +88,17 @@ export function makeProfilePageRoute(
   };
 }
 
-export function makePostProfileRoute(
-  _kv: Deno.Kv,
+/**
+ * makeProfileRoute makes an endpoint for creating or updating a profile.
+ *
+ * Update if the user is the profile owner or create if the profile does not exist.
+ */
+export function makeProfileRoute(
+  kv: Deno.Kv,
   { getSessionId }: Helpers,
 ): Route {
   return {
-    method: "POST",
-    pattern: new URLPattern({ pathname: "/profile" }),
+    pattern: new URLPattern({ pathname: "/claim" }),
     async handler(request) {
       // Check if user is signed in.
       const sessionID = await getSessionId(request);
@@ -100,15 +106,74 @@ export function makePostProfileRoute(
         return new Response("Unauthorized", { status: 401 });
       }
 
-      // Use session ID to get GitHub user ID.
-      // Use GitHub user ID to get Linklab user data.
-      // If profile exists, confirm the user is the owner.
+      // Get the user from the session ID.
+      const user = await getUserBySessionID(kv, sessionID);
+      if (user.value === null) {
+        return new Response("Internal server error", { status: 500 });
+      }
 
-      // Set profile value.
-      return new Response("Unimplemented", { status: 501 });
+      // Get the profile data from the request.
+      const formData = await request.formData();
+
+      // TODO: Fix this error.
+      //
+      // TypeError: Missing content type
+      // at packageData (ext:deno_fetch/22_body.js:399:13)
+      // at consumeBody (ext:deno_fetch/22_body.js:260:12)
+      // at Request.formData (ext:deno_fetch/22_body.js:330:16)
+      // at Object.handler (file:///C:/Users/ethan/Documents/GitHub/linklab/lib/linklab-api.tsx:116:38)
+      // at eventLoopTick (ext:core/01_core.js:175:7)
+      // at async ext:deno_http/00_serve.ts:376:18
+      //
+
+      const profile = parseProfileFormData(formData);
+      if (profile.id === undefined) {
+        return new Response("Bad request", { status: 400 });
+      }
+
+      // Check if the user is the profile owner.
+      const existingProfile = await getProfileByProfileID(kv, profile.id);
+      if (existingProfile.value === null) {
+        return new Response("Not found", { status: 404 });
+      }
+
+      // Prevent user from claiming existing profile.
+      if (existingProfile.value.owner.githubID !== user.value.githubID) {
+        return new Response("Unauthorized", { status: 401 });
+      }
+
+      // Create or update the profile.
+      const result = await setProfileByID(kv, {
+        ...existingProfile.value,
+        ...profile,
+      });
+      if (!result.ok) {
+        return new Response("Internal server error", { status: 500 });
+      }
+
+      return new Response(null, {
+        status: 303,
+        headers: new Headers({ Location: `/${profile.id}` }),
+      });
     },
   };
 }
+
+function parseProfileFormData(formData: FormData): Partial<Profile> {
+  return {
+    id: formData.get("id") as string,
+    title: formData.get("title") as string,
+    description: formData.get("description") as string,
+    iconURL: formData.get("iconURL") as string,
+    colorStyle: formData.get("colorStyle") as string,
+    backgroundStyle: formData.get("backgroundStyle") as string,
+  };
+}
+
+/**
+ * makePostProfileLinkRoute makes a POST endpoint for creating or updating a profile link.
+ */
+// export function makePostProfileLinkRoute()
 
 export function makeUserPageRoute(
   kv: Deno.Kv,

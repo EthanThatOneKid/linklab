@@ -43,10 +43,9 @@ export function getProfileByProfileID(
  */
 export function setProfileByID(
   kv: Deno.Kv,
-  profileID: string,
   profile: Profile,
 ): Promise<Deno.KvCommitResult> {
-  return kv.set([kvKeyPrefixLinklab, kvKeyPrefixProfile, profileID], profile);
+  return kv.set([kvKeyPrefixLinklab, kvKeyPrefixProfile, profile.id], profile);
 }
 
 /**

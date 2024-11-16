@@ -5,7 +5,7 @@ import { ctaStyle } from "#/lib/css/cta.ts";
 export function ClaimForm() {
   return (
     <FORM
-      // action="/claim"
+      action="/claim"
       style={renderStyle({
         display: "flex",
         "flex-direction": "row",
@@ -15,7 +15,7 @@ export function ClaimForm() {
     >
       <INPUT
         type="text"
-        name="username"
+        name="id"
         style={renderStyle({
           flex: "1",
           padding: "0.75rem",
@@ -27,20 +27,20 @@ export function ClaimForm() {
       />
       <BUTTON
         type="submit"
-        onclick={handleEvent(
-          "event.preventDefault(); alert('Feature coming soon!');",
-        )}
+        // onclick={handleEvent(
+        //   "event.preventDefault(); alert('Feature coming soon!');",
+        // )}
         style={ctaStyle}
       >
-        Claim your Linklab
+        Claim your profile
       </BUTTON>
     </FORM>
   );
 }
 
-/**
- * https://stackoverflow.com/a/66064971
- */
-function handleEvent(js: string, id = "event") {
-  return `(function(${id}){${js}})(arguments[0]);return false;`;
-}
+// /**
+//  * https://stackoverflow.com/a/66064971
+//  */
+// function handleEvent(js: string, id = "event") {
+//   return `(function(${id}){${js}})(arguments[0]);return false;`;
+// }
