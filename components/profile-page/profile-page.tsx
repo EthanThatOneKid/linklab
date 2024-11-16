@@ -1,5 +1,5 @@
-import { DIV, H1 } from "@fartlabs/htx";
-import { renderStyle as css } from "@fartlabs/htx/render";
+import { CODE, DIV, H1, PRE } from "@fartlabs/htx";
+import { renderStyle } from "@fartlabs/htx/render";
 import type { Profile } from "#/lib/profile.ts";
 import { Layout } from "#/components/layout.tsx";
 
@@ -11,7 +11,7 @@ export function ProfilePage(props: ProfilePageProps) {
   return (
     <Layout>
       <DIV
-        style={css({
+        style={renderStyle({
           "align-items": "center",
           display: "flex",
           "justify-content": "center",
@@ -19,6 +19,10 @@ export function ProfilePage(props: ProfilePageProps) {
         })}
       >
         <H1>{props.profile.title}</H1>
+
+        <PRE>
+          <CODE>{JSON.stringify(props.profile, null, 2)}</CODE>
+        </PRE>
       </DIV>
     </Layout>
   );

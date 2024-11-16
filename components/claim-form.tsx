@@ -25,22 +25,9 @@ export function ClaimForm() {
           color: "white",
         })}
       />
-      <BUTTON
-        type="submit"
-        // onclick={handleEvent(
-        //   "event.preventDefault(); alert('Feature coming soon!');",
-        // )}
-        style={ctaStyle}
-      >
-        Claim your profile
+      <BUTTON type="submit" style={ctaStyle}>
+        Claim profile
       </BUTTON>
     </FORM>
   );
 }
-
-// /**
-//  * https://stackoverflow.com/a/66064971
-//  */
-// function handleEvent(js: string, id = "event") {
-//   return `(function(${id}){${js}})(arguments[0]);return false;`;
-// }

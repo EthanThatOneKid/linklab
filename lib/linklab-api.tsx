@@ -1,8 +1,6 @@
 import type { Route } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
-import { LandingPage } from "#/components/landing-page/landing-page.tsx";
-import { ProfilePage } from "#/components/profile-page/profile-page.tsx";
-import { UserPage } from "#/components/user-page/user-page.tsx";
+import type { Profile } from "#/lib/profile.ts";
 import {
   getProfileByProfileID,
   getProfilesByProfileIDs,
@@ -10,7 +8,9 @@ import {
   getUserBySessionID,
   setProfileByID,
 } from "#/lib/kv-linklab.ts";
-import { Profile } from "#/lib/profile.ts";
+import { LandingPage } from "#/components/landing-page/landing-page.tsx";
+import { ProfilePage } from "#/components/profile-page/profile-page.tsx";
+import { UserPage } from "#/components/user-page/user-page.tsx";
 
 /**
  * makeLinklabRoutes makes an array of Routes for Linklab.
@@ -20,6 +20,7 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
     makeLandingPageRoute(kv, helpers),
     makeProfileRoute(kv, helpers),
     makeUserPageRoute(kv, helpers),
+    makeProfilePageRoute(helpers, kv),
   ];
 }
 
@@ -58,7 +59,7 @@ export function makeProfilePageRoute(
 ): Route {
   return {
     method: "GET",
-    pattern: new URLPattern({ pathname: "/profile/:id" }),
+    pattern: new URLPattern({ pathname: "/:id" }),
     async handler(request, _info, params) {
       const sessionID = await getSessionId(request);
       if (sessionID === undefined) {
@@ -113,36 +114,48 @@ export function makeProfileRoute(
       }
 
       // Get the profile data from the request.
-      const formData = await request.formData();
-
-      // TODO: Fix this error.
-      //
-      // TypeError: Missing content type
-      // at packageData (ext:deno_fetch/22_body.js:399:13)
-      // at consumeBody (ext:deno_fetch/22_body.js:260:12)
-      // at Request.formData (ext:deno_fetch/22_body.js:330:16)
-      // at Object.handler (file:///C:/Users/ethan/Documents/GitHub/linklab/lib/linklab-api.tsx:116:38)
-      // at eventLoopTick (ext:core/01_core.js:175:7)
-      // at async ext:deno_http/00_serve.ts:376:18
-      //
-
-      const profile = parseProfileFormData(formData);
+      const profile = parseProfileFromRequest(request);
       if (profile.id === undefined) {
         return new Response("Bad request", { status: 400 });
       }
 
-      // Check if the user is the profile owner.
+      // Prevent user from claiming profile with blocklisted ID.
+      const blocklist = new Set(["", "claim", "users"]);
+      if (blocklist.has(profile.id)) {
+        return new Response("Bad request", { status: 400 });
+      }
+
+      // Prevent user from claiming profile with invalid ID.
+      if (!/^[a-z0-9-]+$/.test(profile.id)) {
+        return new Response("Bad request", { status: 400 });
+      }
+
+      // Check if the profile ID is claimed.
       const existingProfile = await getProfileByProfileID(kv, profile.id);
+
+      // If the profile does not exist, create a new one.
       if (existingProfile.value === null) {
-        return new Response("Not found", { status: 404 });
+        const result = await setProfileByID(kv, {
+          ...profile,
+          id: profile.id,
+          owner: user.value,
+        });
+        if (!result.ok) {
+          return new Response("Internal server error", { status: 500 });
+        }
+
+        return new Response(null, {
+          status: 303,
+          headers: new Headers({ Location: `/${profile.id}` }),
+        });
       }
 
       // Prevent user from claiming existing profile.
-      if (existingProfile.value.owner.githubID !== user.value.githubID) {
+      if (existingProfile?.value?.owner.githubID !== user.value.githubID) {
         return new Response("Unauthorized", { status: 401 });
       }
 
-      // Create or update the profile.
+      // Update the profile.
       const result = await setProfileByID(kv, {
         ...existingProfile.value,
         ...profile,
@@ -159,14 +172,16 @@ export function makeProfileRoute(
   };
 }
 
-function parseProfileFormData(formData: FormData): Partial<Profile> {
+function parseProfileFromRequest(request: Request): Partial<Profile> {
+  // TODO: Refactor to use FormData.
+  const { searchParams } = new URL(request.url);
   return {
-    id: formData.get("id") as string,
-    title: formData.get("title") as string,
-    description: formData.get("description") as string,
-    iconURL: formData.get("iconURL") as string,
-    colorStyle: formData.get("colorStyle") as string,
-    backgroundStyle: formData.get("backgroundStyle") as string,
+    id: searchParams.get("id") as string,
+    title: searchParams.get("title") as string,
+    description: searchParams.get("description") as string,
+    iconURL: searchParams.get("iconURL") as string,
+    colorStyle: searchParams.get("colorStyle") as string,
+    backgroundStyle: searchParams.get("backgroundStyle") as string,
   };
 }
 
