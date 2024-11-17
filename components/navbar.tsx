@@ -10,7 +10,9 @@ export interface NavbarProps {
 export function Navbar(props: NavbarProps) {
   return (
     <NAV>
-      <H1 id="top" class="fart-header">Linklab</H1>
+      <A href="/" class="fart-link-visible-on-hover">
+        <H1 id="top" class="fart-header">Linklab</H1>
+      </A>
 
       {props.user === undefined ? <SignInForm /> : (
         <DIV>
