@@ -48,7 +48,7 @@ async function handleOAuthCallback({ sessionId, tokens }: OAuthCallbackData) {
     await setUserByGitHubUserID(kv, {
       githubID: githubUserID,
       githubLogin: githubUser.login,
-      ownedProfiles: [],
+      profilesByID: [],
     });
   }
 

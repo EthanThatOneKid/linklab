@@ -1,4 +1,4 @@
-import { A, H1, H2, HR, LI, P, SECTION, UL } from "@fartlabs/htx";
+import { A, BR, H1, H2, HR, LI, P, SECTION, UL } from "@fartlabs/htx";
 import type { User } from "#/lib/user.ts";
 import type { Profile } from "#/lib/profile.ts";
 import { Layout } from "#/components/layout.tsx";
@@ -25,12 +25,14 @@ export function UserPage(props: UserPageProps) {
           <UL>
             {props.profiles.map((profile) => (
               <LI>
-                <A href={`/${profile.id}`}>{profile.title}</A>
+                <A href={`/${profile.id}`}>
+                  {`@${profile.id}${profile.title ? `: ${profile.title}` : ""}`}
+                </A>
               </LI>
             ))}
           </UL>
         )}
-
+        <BR />
         {isPageOwner ? <ClaimForm /> : ""}
       </SECTION>
     </Layout>

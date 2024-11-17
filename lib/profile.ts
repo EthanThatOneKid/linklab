@@ -1,11 +1,9 @@
-import { User } from "#/lib/user.ts";
-
 /**
  * Profile is a Linklab profile.
  */
 export interface Profile {
   id: string;
-  owner: User;
+  ownerGitHubUserID: string;
   title?: string;
   description?: string;
   iconURL?: string;

@@ -3,11 +3,7 @@ import type { Profile } from "#/lib/profile.ts";
 export const fakeProfile = {
   id: "abc123",
   title: "EthanThatOneKid",
-  owner: {
-    githubID: "123",
-    githubLogin: "EthanThatOneKid",
-    ownedProfiles: [],
-  },
+  ownerGitHubUserID: "123",
   links: [
     {
       title: "Homepage",

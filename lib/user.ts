@@ -13,7 +13,7 @@ export interface User {
   githubLogin: string;
 
   /**
-   * ownedProfiles is a list of profile IDs owned by the user.
+   * profilesByID is a list of profile IDs owned by the user.
    */
-  ownedProfiles: string[];
+  profilesByID: string[];
 }

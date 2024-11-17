@@ -2,6 +2,7 @@ import type { Route } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
 import type { Profile } from "#/lib/profile.ts";
 import {
+  addProfileByGitHubUserID,
   getProfileByProfileID,
   getProfilesByProfileIDs,
   getUserByGitHubLogin,
@@ -135,12 +136,21 @@ export function makeProfileRoute(
 
       // If the profile does not exist, create a new one.
       if (existingProfile.value === null) {
-        const result = await setProfileByID(kv, {
+        const result0 = await setProfileByID(kv, {
           ...profile,
           id: profile.id,
-          owner: user.value,
+          ownerGitHubUserID: user.value.githubID,
         });
-        if (!result.ok) {
+        if (!result0.ok) {
+          return new Response("Internal server error", { status: 500 });
+        }
+
+        const result1 = await addProfileByGitHubUserID(
+          kv,
+          user.value.githubID,
+          profile.id,
+        );
+        if (!result1.ok) {
           return new Response("Internal server error", { status: 500 });
         }
 
@@ -151,7 +161,10 @@ export function makeProfileRoute(
       }
 
       // Prevent user from claiming existing profile.
-      if (existingProfile?.value?.owner.githubID !== user.value.githubID) {
+      if (
+        existingProfile?.value?.ownerGitHubUserID !==
+          user.value.githubID
+      ) {
         return new Response("Unauthorized", { status: 401 });
       }
 
@@ -220,7 +233,7 @@ export function makeUserPageRoute(
 
       const profiles = await getProfilesByProfileIDs(
         kv,
-        pageOwner.value.ownedProfiles,
+        pageOwner.value.profilesByID,
       );
       return new Response(
         <UserPage
