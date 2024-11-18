@@ -5,6 +5,7 @@ import {
   BUTTON,
   DIV,
   FORM,
+  H2,
   INPUT,
   LABEL,
   LI,
@@ -25,14 +26,34 @@ export interface ProfileEditorProps {
 export function ProfileEditor(props: ProfileEditorProps) {
   return (
     <DIV>
+      <H2>Profile metadata</H2>
+      <P>
+        This form contains metadata of the profile in question. Click the update
+        button to confirm changes.
+      </P>
+
       <FORM action={makeProfilesURL()}>
         <LABEL for="id">
-          ID <INPUT id="id" name="id" value={props.value.id} />
+          ID{" "}
+          <INPUT
+            id="id"
+            name="id"
+            value={props.value.id}
+            placeholder="No value provided"
+            required="true"
+          />
         </LABEL>
         <BR />
         <LABEL for="title">
-          Title <INPUT id="title" name="title" value={props.value.title} />
+          Title{" "}
+          <INPUT
+            id="title"
+            name="title"
+            value={props.value.title}
+            placeholder="No value provided"
+          />
         </LABEL>
+
         <BR />
         <LABEL for="description">
           Description
@@ -40,6 +61,7 @@ export function ProfileEditor(props: ProfileEditorProps) {
             id="description"
             name="description"
             value={props.value.description}
+            placeholder="No value provided"
           />
         </LABEL>
         <BR />
@@ -49,6 +71,7 @@ export function ProfileEditor(props: ProfileEditorProps) {
             id="iconURL"
             name="iconURL"
             value={props.value.iconURL}
+            placeholder="No value provided"
           />
         </LABEL>
         <BR />
@@ -57,6 +80,7 @@ export function ProfileEditor(props: ProfileEditorProps) {
           <TEXTAREA
             id="colorStyle"
             name="colorStyle"
+            placeholder="No value provided"
           >
             {props.value.colorStyle}
           </TEXTAREA>
@@ -67,6 +91,7 @@ export function ProfileEditor(props: ProfileEditorProps) {
           <TEXTAREA
             id="backgroundStyle"
             name="backgroundStyle"
+            placeholder="No value provided"
           >
             {props.value.backgroundStyle}
           </TEXTAREA>
@@ -75,19 +100,19 @@ export function ProfileEditor(props: ProfileEditorProps) {
         <BUTTON type="submit" class="fart-button">Update</BUTTON>
       </FORM>
 
-      <BR />
+      <H2>Profile links</H2>
+      <P>
+        This form contains links of the profile in question. Click the update
+        button to confirm changes.
+      </P>
 
       {props.value.links === undefined || props.value.links.length === 0
         ? <P>No links yet.</P>
         : (
           <UL>
-            {props.value?.links?.map((link, index) => (
+            {props.value?.links?.map((link, i) => (
               <LI>
-                <LinkEditor
-                  value={link}
-                  index={index}
-                  parentID={props.value.id}
-                />
+                <LinkEditor value={link} index={i} parentID={props.value.id} />
               </LI>
             ))}
           </UL>
@@ -115,6 +140,7 @@ function LinkEditor(props: LinkEditorProps) {
           id={`link-${props.index}-url`}
           name={`link-${props.index}-url`}
           value={props.value.url}
+          placeholder="No value provided"
         />
       </LABEL>
       <BR />
@@ -124,6 +150,7 @@ function LinkEditor(props: LinkEditorProps) {
           id={`link-${props.index}-title`}
           name={`link-${props.index}-title`}
           value={props.value.title}
+          placeholder="No value provided"
         />
       </LABEL>
       <BR />
@@ -133,6 +160,7 @@ function LinkEditor(props: LinkEditorProps) {
           id={`link-${props.index}-iconURL`}
           name={`link-${props.index}-iconURL`}
           value={props.value.iconURL}
+          placeholder="No value provided"
         />
       </LABEL>
       <BR />
@@ -156,15 +184,28 @@ function AddLinkForm(props: AddLinkFormProps) {
     <DIV>
       <FORM action={makeProfileLinksURL(props.parentID)}>
         <LABEL for="url">
-          Link URL <INPUT id="url" name="url" />
+          Link URL{" "}
+          <INPUT
+            id="url"
+            name="url"
+            type="url"
+            placeholder="https://example.com"
+            required="true"
+          />
         </LABEL>
         <BR />
         <LABEL for="title">
-          Link title <INPUT id="title" name="title" />
+          Link title <INPUT id="title" name="title" placeholder="Example" />
         </LABEL>
         <BR />
         <LABEL for="iconURL">
-          Link icon URL <INPUT id="iconURL" name="iconURL" />
+          Link icon URL{" "}
+          <INPUT
+            id="iconURL"
+            name="iconURL"
+            type="url"
+            placeholder="https://example.com/icon.png"
+          />
         </LABEL>
         <BR />
         <BUTTON type="submit" class="fart-button">Add</BUTTON>
