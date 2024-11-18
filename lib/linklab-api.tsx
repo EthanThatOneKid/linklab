@@ -30,7 +30,6 @@ export function makeLandingPageRoute(
   { getSessionId }: Helpers,
 ): Route {
   return {
-    method: "GET",
     pattern: new URLPattern({ pathname: "/" }),
     async handler(request) {
       const sessionID = await getSessionId(request);
@@ -59,7 +58,6 @@ export function makeProfilePageRoute(
   kv: Deno.Kv,
 ): Route {
   return {
-    method: "GET",
     pattern: new URLPattern({ pathname: "/:id" }),
     async handler(request, _info, params) {
       const sessionID = await getSessionId(request);
@@ -189,12 +187,12 @@ function parseProfileFromRequest(request: Request): Partial<Profile> {
   // TODO: Refactor to use FormData.
   const { searchParams } = new URL(request.url);
   return {
-    id: searchParams.get("id") as string,
-    title: searchParams.get("title") as string,
-    description: searchParams.get("description") as string,
-    iconURL: searchParams.get("iconURL") as string,
-    colorStyle: searchParams.get("colorStyle") as string,
-    backgroundStyle: searchParams.get("backgroundStyle") as string,
+    id: searchParams.get("id") ?? undefined,
+    title: searchParams.get("title") ?? undefined,
+    description: searchParams.get("description") ?? undefined,
+    iconURL: searchParams.get("iconURL") ?? undefined,
+    colorStyle: searchParams.get("colorStyle") ?? undefined,
+    backgroundStyle: searchParams.get("backgroundStyle") ?? undefined,
   };
 }
 

@@ -1,7 +1,8 @@
-import { CODE, DIV, H1, PRE } from "@fartlabs/htx";
+import { BR, DIV, H1 } from "@fartlabs/htx";
 import { renderStyle } from "@fartlabs/htx/render";
 import type { Profile } from "#/lib/profile.ts";
 import { Layout } from "#/components/layout.tsx";
+import { ProfileEditor } from "./profile-editor.tsx";
 
 export interface ProfilePageProps {
   profile: Profile;
@@ -19,10 +20,8 @@ export function ProfilePage(props: ProfilePageProps) {
         })}
       >
         <H1>{props.profile.title}</H1>
-
-        <PRE>
-          <CODE>{JSON.stringify(props.profile, null, 2)}</CODE>
-        </PRE>
+        <BR />
+        <ProfileEditor value={props.profile} />
       </DIV>
     </Layout>
   );
