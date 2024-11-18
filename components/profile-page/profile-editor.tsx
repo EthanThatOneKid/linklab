@@ -115,11 +115,7 @@ function LinkEditor(props: LinkEditorProps) {
         </LABEL>
         <BR />
         <BUTTON type="submit">Update</BUTTON>
-        <BUTTON
-          formaction={`/profiles/${props.parentID}/links/${props.index}`}
-          formmethod="DELETE"
-          type="submit"
-        >
+        <BUTTON formmethod="DELETE" type="submit">
           Delete
         </BUTTON>
       </FORM>
