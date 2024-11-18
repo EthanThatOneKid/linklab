@@ -25,6 +25,7 @@ export function Layout(props: LayoutProps) {
   return (
     <HTML>
       <META charset="utf-8" />
+      <META name="viewport" content="width=device-width, initial-scale=1" />
       <LINK rel="icon" href="https://fartlabs.org/fl-logo.png" />
       <TITLE>{props.title ?? defaultPageTitle}</TITLE>
       <META
@@ -32,6 +33,7 @@ export function Layout(props: LayoutProps) {
         content={props.description ?? defaultPageDescription}
       />
       <LINK rel="stylesheet" href="https://css.fart.tools/fart.css" />
+      <LINK rel="stylesheet" href="/static/linklab.css" />
       <BODY>
         {(props.children ?? []).join("")}
         <Footer />

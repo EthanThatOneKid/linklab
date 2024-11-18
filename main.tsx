@@ -8,7 +8,7 @@ import {
   setGitHubUserIDBySessionID,
   setUserByGitHubUserID,
 } from "#/lib/kv-linklab.ts";
-import { makeLinklabRoutes } from "#/lib/linklab-api.tsx";
+import { makeLinklabRoutes } from "#/lib/linklab-routes/linklab-routes.ts";
 
 // Linklab is a Linktree clone.
 //

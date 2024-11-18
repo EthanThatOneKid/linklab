@@ -1,11 +1,11 @@
 import { BUTTON, FORM, INPUT } from "@fartlabs/htx";
 import { renderStyle } from "@fartlabs/htx/render";
-import { ctaStyle } from "#/lib/css/cta.ts";
+import { makeProfilesURL } from "#/lib/urls.ts";
 
 export function ClaimForm() {
   return (
     <FORM
-      action="/claim"
+      action={makeProfilesURL()}
       style={renderStyle({
         display: "flex",
         "flex-direction": "row",
@@ -25,7 +25,7 @@ export function ClaimForm() {
           color: "white",
         })}
       />
-      <BUTTON type="submit" style={ctaStyle}>
+      <BUTTON type="submit" class="fart-button">
         Claim profile
       </BUTTON>
     </FORM>
