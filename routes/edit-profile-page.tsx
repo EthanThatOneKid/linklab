@@ -7,7 +7,7 @@ import {
 } from "#/lib/kv-linklab.ts";
 import { ProfileEditPage } from "#/components/profile-page/profile-page.tsx";
 
-export function makeProfilePageHandler(
+export function makeEditProfilePageHandler(
   kv: Deno.Kv,
   { getSessionId }: Helpers,
 ): Handler {
@@ -41,7 +41,11 @@ export function makeProfilePageHandler(
     }
 
     return new Response(
-      <ProfileEditPage profile={profile.value} owner={owner.value} />,
+      <ProfileEditPage
+        user={user.value}
+        profile={profile.value}
+        owner={owner.value}
+      />,
       { headers: new Headers({ "Content-Type": "text/html" }) },
     );
   };

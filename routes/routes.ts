@@ -4,7 +4,7 @@ import type { Helpers } from "@deno/kv-oauth";
 import { makeLandingPageHandler } from "./landing-page.tsx";
 import { makeProfilesHandler } from "./profiles.ts";
 import { makeProfileLinkHandler } from "./profile-link.ts";
-import { makeProfilePageHandler } from "./profile-page.tsx";
+import { makeEditProfilePageHandler } from "./edit-profile-page.tsx";
 import { makeUserPageHandler } from "./user-page.tsx";
 
 /**
@@ -22,7 +22,7 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
     },
     {
       pattern: new URLPattern({ pathname: "/profiles/:id" }),
-      handler: makeProfilePageHandler(kv, helpers),
+      handler: makeEditProfilePageHandler(kv, helpers),
     },
     {
       pattern: new URLPattern({ pathname: "/profiles/:id/links/{:index}?" }),
