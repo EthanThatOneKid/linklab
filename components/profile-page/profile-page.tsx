@@ -1,21 +1,23 @@
-import { BR, H1, SECTION } from "@fartlabs/htx";
+import { BR, SECTION } from "@fartlabs/htx";
 import type { Profile } from "#/lib/profile.ts";
 import type { User } from "#/lib/user.ts";
 import { Layout } from "#/components/layout.tsx";
 import { ProfileEditor } from "./profile-editor.tsx";
 
-export interface ProfilePageProps {
+export interface ProfileEditPageProps {
   profile: Profile;
   owner: User;
 }
 
-export function ProfilePage(props: ProfilePageProps) {
+export function ProfileEditPage(props: ProfileEditPageProps) {
   return (
     <Layout>
       <SECTION class="fart-section">
-        <H1>{props.profile.title ?? `@${props.profile.id}`}</H1>
-        <BR />
         <ProfileEditor value={props.profile} />
+
+        <BR />
+        {/* TODO: Add a link to the profile page. */}
+        {/* TODO: Link to user page of owner */}
       </SECTION>
     </Layout>
   );

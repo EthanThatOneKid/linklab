@@ -1,5 +1,17 @@
 import type { Profile, ProfileLink } from "#/lib/profile.ts";
-import { BR, BUTTON, DIV, FORM, INPUT, LABEL, LI, P, UL } from "@fartlabs/htx";
+import {
+  A,
+  BR,
+  BUTTON,
+  DIV,
+  FORM,
+  INPUT,
+  LABEL,
+  LI,
+  P,
+  TEXTAREA,
+  UL,
+} from "@fartlabs/htx";
 import {
   makeProfileLinksURL,
   makeProfileLinkURL,
@@ -23,7 +35,7 @@ export function ProfileEditor(props: ProfileEditorProps) {
         </LABEL>
         <BR />
         <LABEL for="description">
-          Description{" "}
+          Description
           <INPUT
             id="description"
             name="description"
@@ -41,24 +53,26 @@ export function ProfileEditor(props: ProfileEditorProps) {
         </LABEL>
         <BR />
         <LABEL for="colorStyle">
-          Color Style{" "}
-          <INPUT
+          Color style<CSS3CompatibilityBadge />{" "}
+          <TEXTAREA
             id="colorStyle"
             name="colorStyle"
-            value={props.value.colorStyle}
-          />
+          >
+            {props.value.colorStyle}
+          </TEXTAREA>
         </LABEL>
         <BR />
         <LABEL for="backgroundStyle">
-          Background Style{" "}
-          <INPUT
+          Background style<CSS3CompatibilityBadge />{" "}
+          <TEXTAREA
             id="backgroundStyle"
             name="backgroundStyle"
-            value={props.value.backgroundStyle}
-          />
+          >
+            {props.value.backgroundStyle}
+          </TEXTAREA>
         </LABEL>
         <BR />
-        <BUTTON type="submit">Update</BUTTON>
+        <BUTTON type="submit" class="fart-button">Update</BUTTON>
       </FORM>
 
       <BR />
@@ -122,8 +136,8 @@ function LinkEditor(props: LinkEditorProps) {
         />
       </LABEL>
       <BR />
-      <BUTTON type="submit">Update</BUTTON>
-      <BUTTON formmethod="DELETE" type="submit">
+      <BUTTON type="submit" class="fart-button">Update</BUTTON>
+      <BUTTON formmethod="DELETE" type="submit" class="fart-button">
         Delete
       </BUTTON>
     </FORM>
@@ -146,15 +160,29 @@ function AddLinkForm(props: AddLinkFormProps) {
         </LABEL>
         <BR />
         <LABEL for="title">
-          Link Title <INPUT id="title" name="title" />
+          Link title <INPUT id="title" name="title" />
         </LABEL>
         <BR />
         <LABEL for="iconURL">
-          Link Icon URL <INPUT id="iconURL" name="iconURL" />
+          Link icon URL <INPUT id="iconURL" name="iconURL" />
         </LABEL>
         <BR />
-        <BUTTON type="submit">Add</BUTTON>
+        <BUTTON type="submit" class="fart-button">Add</BUTTON>
       </FORM>
     </DIV>
+  );
+}
+
+/**
+ * https://simpleicons.org/?q=css
+ */
+function CSS3CompatibilityBadge() {
+  return (
+    <A href="https://developer.mozilla.org/en-US/docs/Web/CSS">
+      {`<SVG role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#1572B6" width="16" height="16">
+  <title>Compatible with CSS3</title>
+  <path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413L5.41 4.41l.213 2.622 10.125.002-.255 2.716h-6.64l.24 2.573h6.182l-.366 3.523-2.91.804-2.956-.81-.188-2.11h-2.61l.29 3.855L12 19.288l5.373-1.53L18.59 4.414z" />
+</SVG>`}
+    </A>
   );
 }

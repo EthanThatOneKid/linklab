@@ -1,10 +1,35 @@
-input[type="text"] {
-  border: none;
-  border-bottom: 2px solid #ccc;
-  transition: border-color 0.3s;
+form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
 }
 
-input[type="text"]:focus {
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: none;
+  border-bottom: 2px solid var(--fart-darker-dark-green);
+  transition: border-color 0.3s;
+  font-size: 16px;
+  border-radius: 4px;
+  color: var(--fart-offwhite);
+  background-color: var(--fart-darker-dark-green);
+}
+
+input:focus, textarea:focus {
   outline: none;
+  color: var(--fart-green);
   border-bottom: 2px solid var(--fart-green);
+}
+
+br {
+  margin-bottom: 20px;
 }

@@ -5,7 +5,7 @@ import {
   getUserByGitHubUserID,
   getUserBySessionID,
 } from "#/lib/kv-linklab.ts";
-import { ProfilePage } from "#/components/profile-page/profile-page.tsx";
+import { ProfileEditPage } from "#/components/profile-page/profile-page.tsx";
 
 export function makeProfilePageHandler(
   kv: Deno.Kv,
@@ -41,7 +41,7 @@ export function makeProfilePageHandler(
     }
 
     return new Response(
-      <ProfilePage profile={profile.value} owner={owner.value} />,
+      <ProfileEditPage profile={profile.value} owner={owner.value} />,
       { headers: new Headers({ "Content-Type": "text/html" }) },
     );
   };
