@@ -19,7 +19,7 @@ import { UserPage } from "#/components/user-page/user-page.tsx";
 export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
   return [
     makeLandingPageRoute(kv, helpers),
-    makeProfileRoute(kv, helpers),
+    makeProfilesRoute(kv, helpers),
     makeUserPageRoute(kv, helpers),
     makeProfilePageRoute(helpers, kv),
   ];
@@ -80,8 +80,16 @@ export function makeProfilePageRoute(
         return new Response("Not found", { status: 404 });
       }
 
+      const owner = await getUserByGitHubLogin(
+        kv,
+        profile.value.ownerGitHubUserID,
+      );
+      if (owner.value === null) {
+        return new Response("Internal server error", { status: 500 });
+      }
+
       return new Response(
-        <ProfilePage profile={profile.value} />,
+        <ProfilePage profile={profile.value} owner={owner.value} />,
         { headers: new Headers({ "Content-Type": "text/html" }) },
       );
     },
@@ -89,16 +97,16 @@ export function makeProfilePageRoute(
 }
 
 /**
- * makeProfileRoute makes an endpoint for creating or updating a profile.
+ * makeProfilesRoute makes an endpoint for creating or updating a profile.
  *
  * Update if the user is the profile owner or create if the profile does not exist.
  */
-export function makeProfileRoute(
+export function makeProfilesRoute(
   kv: Deno.Kv,
   { getSessionId }: Helpers,
 ): Route {
   return {
-    pattern: new URLPattern({ pathname: "/claim" }),
+    pattern: new URLPattern({ pathname: "/profiles" }),
     async handler(request) {
       // Check if user is signed in.
       const sessionID = await getSessionId(request);
@@ -119,7 +127,7 @@ export function makeProfileRoute(
       }
 
       // Prevent user from claiming profile with blocklisted ID.
-      const blocklist = new Set(["", "claim", "users"]);
+      const blocklist = new Set(["", "profiles", "users"]);
       if (blocklist.has(profile.id)) {
         return new Response("Bad request", { status: 400 });
       }

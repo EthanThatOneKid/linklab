@@ -1,28 +1,22 @@
-import { BR, DIV, H1 } from "@fartlabs/htx";
-import { renderStyle } from "@fartlabs/htx/render";
+import { BR, H1, SECTION } from "@fartlabs/htx";
 import type { Profile } from "#/lib/profile.ts";
+import type { User } from "#/lib/user.ts";
 import { Layout } from "#/components/layout.tsx";
 import { ProfileEditor } from "./profile-editor.tsx";
 
 export interface ProfilePageProps {
   profile: Profile;
+  owner: User;
 }
 
 export function ProfilePage(props: ProfilePageProps) {
   return (
     <Layout>
-      <DIV
-        style={renderStyle({
-          "align-items": "center",
-          display: "flex",
-          "justify-content": "center",
-          height: "100%",
-        })}
-      >
-        <H1>{props.profile.title}</H1>
+      <SECTION class="fart-section">
+        <H1>{props.profile.title ?? `@${props.profile.id}`}</H1>
         <BR />
         <ProfileEditor value={props.profile} />
-      </DIV>
+      </SECTION>
     </Layout>
   );
 }
