@@ -3,7 +3,7 @@ import type { User } from "#/lib/user.ts";
 import type { Profile } from "#/lib/profile.ts";
 import { Layout } from "#/components/layout.tsx";
 import { Navbar } from "#/components/navbar.tsx";
-import { ClaimForm } from "#/components/claim-form.tsx";
+import { ClaimProfileForm } from "#/components/claim-profile-form.tsx";
 
 export interface UserPageProps {
   user: User;
@@ -25,7 +25,7 @@ export function UserPage(props: UserPageProps) {
           <UL>
             {props.profiles.map((profile) => (
               <LI>
-                <A href={`/${profile.id}`}>
+                <A href={`/profiles/${profile.id}`}>
                   {`@${profile.id}${profile.title ? `: ${profile.title}` : ""}`}
                 </A>
               </LI>
@@ -33,7 +33,7 @@ export function UserPage(props: UserPageProps) {
           </UL>
         )}
         <BR />
-        {isPageOwner ? <ClaimForm /> : ""}
+        {isPageOwner ? <ClaimProfileForm /> : ""}
       </SECTION>
     </Layout>
   );

@@ -2,7 +2,7 @@ import { BUTTON, FORM, INPUT } from "@fartlabs/htx";
 import { renderStyle } from "@fartlabs/htx/render";
 import { makeProfilesURL } from "#/lib/urls.ts";
 
-export function ClaimForm() {
+export function ClaimProfileForm() {
   return (
     <FORM
       action={makeProfilesURL()}

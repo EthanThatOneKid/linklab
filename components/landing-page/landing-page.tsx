@@ -2,7 +2,7 @@ import { P, SECTION, SPAN } from "@fartlabs/htx";
 import type { User } from "#/lib/user.ts";
 import { Layout } from "#/components/layout.tsx";
 import { Navbar } from "#/components/navbar.tsx";
-import { ClaimForm } from "#/components/claim-form.tsx";
+import { ClaimProfileForm } from "#/components/claim-profile-form.tsx";
 
 export interface LandingPageProps {
   user?: User;
@@ -21,7 +21,7 @@ export function LandingPage(props: LandingPageProps) {
           and other social media profiles.
         </P>
 
-        <ClaimForm />
+        <ClaimProfileForm />
       </SECTION>
     </Layout>
   );

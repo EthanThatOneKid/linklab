@@ -4,6 +4,7 @@ import {
   BR,
   BUTTON,
   DIV,
+  EM,
   FORM,
   H2,
   INPUT,
@@ -107,7 +108,11 @@ export function ProfileEditor(props: ProfileEditorProps) {
       </P>
 
       {props.value.links === undefined || props.value.links.length === 0
-        ? <P>No links yet.</P>
+        ? (
+          <P>
+            <EM>No links yet.</EM>
+          </P>
+        )
         : (
           <UL>
             {props.value?.links?.map((link, i) => (
