@@ -8,17 +8,7 @@ import {
   setGitHubUserIDBySessionID,
   setUserByGitHubUserID,
 } from "#/lib/kv-linklab.ts";
-import { makeLinklabRoutes } from "#/lib/linklab-routes/linklab-routes.ts";
-
-// Linklab is a Linktree clone.
-//
-// Required pages:
-// - Landing page
-// - Profile page
-// - Profile edit page
-// - Profile delete page
-// - Profile list page
-//
+import { makeLinklabRoutes } from "#/routes/routes.ts";
 
 export const routes: Route[] = [
   ...makeKvOAuthRoutes(githubOAuthHelpers, handleOAuthCallback),
