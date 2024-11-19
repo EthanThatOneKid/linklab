@@ -1,13 +1,11 @@
 import type { Handler } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
-import {
-  getProfilesByProfileIDs,
-  getUserByGitHubLogin,
-  getUserBySessionID,
-} from "#/lib/kv-linklab.ts";
-import { UserPage } from "./user-page.tsx";
+import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
+import { getUserByGitHubUserID } from "#/lib/kv/get-user-by-github-user-id.ts";
+import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
+import { ProfileLinksSettingsPage } from "./profile-links-settings-page.tsx";
 
-export function makeUserPageHandler(
+export function makeProfileLinksSettingsPageHandler(
   kv: Deno.Kv,
   { getSessionId }: Helpers,
 ): Handler {
@@ -22,25 +20,28 @@ export function makeUserPageHandler(
       return new Response("Internal server error", { status: 500 });
     }
 
-    const login = params?.pathname?.groups?.login;
-    if (login === undefined) {
+    const profileID = params?.pathname?.groups?.id;
+    if (profileID === undefined) {
       return new Response("Not found", { status: 404 });
     }
 
-    const pageOwner = await getUserByGitHubLogin(kv, login);
-    if (pageOwner.value === null) {
+    const profile = await getProfileByProfileID(kv, profileID);
+    if (profile.value === null) {
       return new Response("Not found", { status: 404 });
     }
 
-    const profiles = await getProfilesByProfileIDs(
+    const owner = await getUserByGitHubUserID(
       kv,
-      pageOwner.value.profilesByID,
+      profile.value.ownerGitHubUserID,
     );
+    if (owner.value === null) {
+      return new Response("Internal server error", { status: 500 });
+    }
+
     return new Response(
-      <UserPage
+      <ProfileLinksSettingsPage
         user={user.value}
-        pageOwner={pageOwner.value}
-        profiles={profiles}
+        profile={profile.value}
       />,
       { headers: new Headers({ "Content-Type": "text/html" }) },
     );

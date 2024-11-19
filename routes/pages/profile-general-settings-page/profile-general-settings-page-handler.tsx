@@ -1,10 +1,8 @@
 import type { Handler } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
-import {
-  getProfileByProfileID,
-  getUserByGitHubUserID,
-  getUserBySessionID,
-} from "#/lib/kv-linklab.ts";
+import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
+import { getUserByGitHubUserID } from "#/lib/kv/get-user-by-github-user-id.ts";
+import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { ProfileGeneralSettingsPage } from "./profile-general-settings-page.tsx";
 
 export function makeProfileGeneralSettingsPageHandler(

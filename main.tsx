@@ -1,50 +1,13 @@
 import type { Route } from "@std/http";
 import { route } from "@std/http";
-import type { OAuthCallbackData } from "#/lib/kv-oauth.ts";
 import { githubOAuthHelpers, kv, makeKvOAuthRoutes } from "#/lib/kv-oauth.ts";
-import {
-  getUserByGitHubUserID,
-  setGitHubUserIDByGitHubLogin,
-  setGitHubUserIDBySessionID,
-  setUserByGitHubUserID,
-} from "#/lib/kv-linklab.ts";
+import { makeOAuthCallbackHandler } from "#/lib/kv/handle-oauth-callback.ts";
 import { makeLinklabRoutes } from "#/routes/routes.ts";
 
 export const routes: Route[] = [
-  ...makeKvOAuthRoutes(githubOAuthHelpers, handleOAuthCallback),
+  ...makeKvOAuthRoutes(githubOAuthHelpers, makeOAuthCallbackHandler(kv)),
   ...makeLinklabRoutes(kv, githubOAuthHelpers),
 ];
-
-async function handleOAuthCallback({ sessionId, tokens }: OAuthCallbackData) {
-  // Associate the session ID with the Linklab user.
-  const githubUserRequest = await fetch(
-    "https://api.github.com/user",
-    {
-      headers: new Headers({ Authorization: `Bearer ${tokens.accessToken}` }),
-    },
-  );
-  const githubUser = await githubUserRequest.json();
-  const githubUserID = String(githubUser.id);
-  await setGitHubUserIDBySessionID(
-    kv,
-    sessionId,
-    githubUserID,
-    tokens.expiresIn,
-  );
-
-  // Create new user if not exists.
-  const user = await getUserByGitHubUserID(kv, githubUserID);
-  if (user.value === null) {
-    await setUserByGitHubUserID(kv, {
-      githubID: githubUserID,
-      githubLogin: githubUser.login,
-      profilesByID: [],
-    });
-  }
-
-  // Update the user's GitHub username.
-  await setGitHubUserIDByGitHubLogin(kv, githubUser.login, githubUserID);
-}
 
 export const router = route(routes, defaultHandler);
 

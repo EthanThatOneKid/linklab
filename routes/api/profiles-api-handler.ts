@@ -1,12 +1,10 @@
 import type { Handler } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
 import type { Profile } from "#/lib/profile.ts";
-import {
-  addProfileByGitHubUserID,
-  getProfileByProfileID,
-  getUserBySessionID,
-  setProfileByID,
-} from "#/lib/kv-linklab.ts";
+import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
+import { addProfileByGitHubUserID } from "#/lib/kv/add-profile-by-github-user-id.ts";
+import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
+import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
 
 /**
  * makeProfilesHandler makes an endpoint for creating or updating a profile.
@@ -55,7 +53,7 @@ export function makeProfilesAPIHandler(
 
     // If the profile does not exist, create a new one.
     if (existingProfile.value === null) {
-      const result0 = await setProfileByID(kv, {
+      const result0 = await setProfileByProfileID(kv, {
         ...profile,
         id: profile.id,
         ownerGitHubUserID: user.value.githubID,
@@ -88,7 +86,7 @@ export function makeProfilesAPIHandler(
     }
 
     // Update the profile.
-    const result2 = await setProfileByID(kv, {
+    const result2 = await setProfileByProfileID(kv, {
       ...existingProfile.value,
       ...profile,
     });

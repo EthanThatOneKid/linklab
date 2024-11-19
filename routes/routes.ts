@@ -3,10 +3,10 @@ import { serveDir } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
 import { makeProfilesAPIHandler } from "./api/profiles-api-handler.ts";
 import { makeLinksAPIHandler } from "./api/links-api-handler.ts";
-import { makeLandingPageHandler } from "./landing-page/landing-page-handler.tsx";
-import { makeProfileLinksSettingsPageHandler } from "./profile-links-settings-page/profile-links-settings-page-handler.tsx";
-import { makeProfileGeneralSettingsPageHandler } from "./profile-general-settings-page/profile-general-settings-page-handler.tsx";
-import { makeUserPageHandler } from "./user-page/user-page-handler.tsx";
+import { makeLandingPageHandler } from "./pages/landing-page/landing-page-handler.tsx";
+import { makeProfileLinksSettingsPageHandler } from "./pages/profile-links-settings-page/profile-links-settings-page-handler.tsx";
+import { makeProfileGeneralSettingsPageHandler } from "./pages/profile-general-settings-page/profile-general-settings-page-handler.tsx";
+import { makeUserPageHandler } from "./pages/user-page/user-page-handler.tsx";
 
 /**
  * makeLinklabRoutes makes an array of Routes for Linklab.
@@ -44,7 +44,7 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
       handler: makeUserPageHandler(kv, helpers),
     },
     {
-      pattern: new URLPattern({ pathname: "/static/(.*)" }),
+      pattern: new URLPattern({ pathname: "/static/*" }),
       handler(request) {
         return serveDir(request, { fsRoot: "./static", urlRoot: "static" });
       },

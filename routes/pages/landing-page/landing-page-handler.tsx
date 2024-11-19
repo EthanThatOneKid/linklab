@@ -1,6 +1,6 @@
 import type { Handler } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
-import { getUserBySessionID } from "#/lib/kv-linklab.ts";
+import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { LandingPage } from "./landing-page.tsx";
 
 export function makeLandingPageHandler(

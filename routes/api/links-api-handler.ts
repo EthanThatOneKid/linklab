@@ -1,11 +1,9 @@
 import type { Handler } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
 import type { ProfileLink } from "#/lib/profile.ts";
-import {
-  getProfileByProfileID,
-  getUserBySessionID,
-  setProfileByID,
-} from "#/lib/kv-linklab.ts";
+import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
+import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
+import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
 
 export function makeLinksAPIHandler(
   kv: Deno.Kv,
@@ -56,7 +54,7 @@ export function makeLinksAPIHandler(
     // Update the profile link.
     const profileLinks = profile.value.links ?? [];
     profileLinks[indexNumber] = profileLink;
-    const result = await setProfileByID(kv, {
+    const result = await setProfileByProfileID(kv, {
       ...profile.value,
       links: profileLinks,
     });
