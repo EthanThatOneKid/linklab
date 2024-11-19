@@ -24,3 +24,8 @@ export const kvKeyPrefixUserByGitHubUserID = "user-by-github-user-id";
  */
 export const kvKeyPrefixGitHubUserIDByGitHubLogin =
   "github-user-id-by-github-login";
+
+/**
+ * kvKeyPrefixProjectByProfileID is the project by profile ID prefix for Deno Kv keys.
+ */
+export const kvKeyPrefixProjectByProfileID = "project-by-profile-id";
