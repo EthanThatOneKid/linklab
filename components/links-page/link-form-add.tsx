@@ -1,14 +1,14 @@
 import { BR, BUTTON, DIV, FORM, INPUT, LABEL } from "@fartlabs/htx";
 import { makeProfileLinksURL } from "#/lib/urls.ts";
 
-interface ProfileLinkAddFormProps {
+interface LinkFormAddProps {
   /**
    * parentID is the ID of the profile that the new link will be added to.
    */
   parentID: string;
 }
 
-export function ProfileLinkAddForm(props: ProfileLinkAddFormProps) {
+export function LinkFormAdd(props: LinkFormAddProps) {
   return (
     <DIV>
       <FORM action={makeProfileLinksURL(props.parentID)}>

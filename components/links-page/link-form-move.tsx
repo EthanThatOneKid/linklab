@@ -1,10 +1,10 @@
 import { P } from "@fartlabs/htx";
 
-export interface ProfileLinkMoveFormProps {
+export interface LinkFormMoveProps {
   parentID: string;
 }
 
-export function ProfileLinkMoveForm(_props: ProfileLinkMoveFormProps) {
+export function LinkFormMove(_props: LinkFormMoveProps) {
   /**
    * index is the index of the link that will be moved.
    *

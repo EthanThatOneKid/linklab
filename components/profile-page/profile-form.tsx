@@ -2,11 +2,11 @@ import type { Profile } from "#/lib/profile.ts";
 import { A, BR, BUTTON, FORM, INPUT, LABEL, TEXTAREA } from "@fartlabs/htx";
 import { makeProfilesURL } from "#/lib/urls.ts";
 
-export interface ProfileMetadataFormProps {
+export interface ProfileFormProps {
   value: Profile;
 }
 
-export function ProfileMetadataForm(props: ProfileMetadataFormProps) {
+export function ProfileForm(props: ProfileFormProps) {
   return (
     <FORM action={makeProfilesURL()}>
       <LABEL for="id">

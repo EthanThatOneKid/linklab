@@ -2,13 +2,13 @@ import { BR, BUTTON, FORM, INPUT, LABEL } from "@fartlabs/htx";
 import type { ProfileLink } from "#/lib/profile.ts";
 import { makeProfileLinkURL } from "#/lib/urls.ts";
 
-interface ProfileLinkFormProps {
+interface LinkFormProps {
   parentID: string;
   index: number;
   value: ProfileLink;
 }
 
-export function ProfileLinkForm(props: ProfileLinkFormProps) {
+export function LinkForm(props: LinkFormProps) {
   return (
     <FORM action={makeProfileLinkURL(props.parentID, props.index.toString())}>
       <LABEL for={`link-${props.index}-url`}>

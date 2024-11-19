@@ -31,3 +31,23 @@ input:focus, textarea:focus {
 br {
   margin-bottom: 20px;
 }
+
+.tabs {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 3em 0;
+  display: flex;
+}
+
+.tab > a {
+  transition: all 0.3s;
+  padding: 12px 15px;
+  margin: 24px 0 30px 0;
+  cursor: pointer;
+  border-radius: 2em;
+}
+
+.tab > a:hover, .tab > a.active {
+  background-color: var(--fart-darker-dark-green);
+  color: var(--fart-green);
+}

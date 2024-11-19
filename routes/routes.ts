@@ -16,6 +16,7 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
       pattern: new URLPattern({ pathname: "/" }),
       handler: makeLandingPageHandler(kv, helpers),
     },
+    // TODO: Move to /api subdir.
     {
       pattern: new URLPattern({ pathname: "/profiles" }),
       handler: makeProfilesHandler(kv, helpers),
@@ -24,6 +25,7 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
       pattern: new URLPattern({ pathname: "/profiles/:id" }),
       handler: makeProfileSettingsPageHandler(kv, helpers),
     },
+    // TODO: Move to /api subdir.
     {
       pattern: new URLPattern({ pathname: "/profiles/:id/links/{:index}?" }),
       handler: makeProfileLinkHandler(kv, helpers),

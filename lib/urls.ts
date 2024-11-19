@@ -6,6 +6,10 @@ export function makeProfileURL(profileID: string): string {
   return `${makeProfilesURL()}/${profileID}`;
 }
 
+export function makeProfileTransferURL(profileID: string): string {
+  return `${makeProfileURL(profileID)}/transfer`;
+}
+
 export function makeProfileLinksURL(profileID: string): string {
   return `${makeProfileURL(profileID)}/links`;
 }
