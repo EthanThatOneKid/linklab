@@ -42,6 +42,7 @@ export function makeProfileLinksSettingsPageHandler(
       <ProfileLinksSettingsPage
         user={user.value}
         profile={profile.value}
+        owner={owner.value}
       />,
       { headers: new Headers({ "Content-Type": "text/html" }) },
     );

@@ -11,6 +11,7 @@ import { LinkFormMove } from "./link-form-move.tsx";
 
 export interface LinksPageProps {
   profile: Profile;
+  owner: User;
   user: User;
 }
 
@@ -22,6 +23,7 @@ export function ProfileLinksSettingsPage(props: LinksPageProps) {
       <SECTION class="fart-section">
         <SettingsLayout
           profile={props.profile}
+          owner={props.user}
           tabs={makeSettingsTabs("links", props.profile.id)}
         >
           <DIV>

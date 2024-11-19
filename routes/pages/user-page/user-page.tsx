@@ -18,7 +18,7 @@ export function UserPage(props: UserPageProps) {
     <Layout>
       <SECTION class="fart-section">
         <Navbar user={props.user} />
-        <H1>@{props.pageOwner.githubLogin}</H1>
+        <H1>{props.pageOwner.githubLogin}</H1>
         <H2>{isPageOwner ? "Your" : "Their"} profiles</H2>
 
         {props.profiles.length === 0 ? <P>No profiles yet.</P> : (

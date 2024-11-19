@@ -24,6 +24,7 @@ export function ProfileGeneralSettingsPage(
       <SECTION class="fart-section">
         <SettingsLayout
           profile={props.profile}
+          owner={props.owner}
           tabs={makeSettingsTabs("general", props.profile.id)}
         >
           <H3>General settings</H3>
