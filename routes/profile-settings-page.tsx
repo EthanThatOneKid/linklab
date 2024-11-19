@@ -5,9 +5,9 @@ import {
   getUserByGitHubUserID,
   getUserBySessionID,
 } from "#/lib/kv-linklab.ts";
-import { ProfileEditPage } from "#/components/profile-edit-page/profile-edit-page.tsx";
+import { ProfileEditPage } from "#/components/profile-settings-page/profile-settings-page.tsx";
 
-export function makeEditProfilePageHandler(
+export function makeProfileSettingsPageHandler(
   kv: Deno.Kv,
   { getSessionId }: Helpers,
 ): Handler {

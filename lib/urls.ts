@@ -13,3 +13,11 @@ export function makeProfileLinksURL(profileID: string): string {
 export function makeProfileLinkURL(profileID: string, linkID: string): string {
   return `${makeProfileLinksURL(profileID)}/${linkID}`;
 }
+
+export function makeUsersURL(): string {
+  return "/users";
+}
+
+export function makeUserURL(userID: string): string {
+  return `${makeUsersURL()}/${userID}`;
+}
