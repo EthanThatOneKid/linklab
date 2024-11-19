@@ -4,7 +4,7 @@ import type { User } from "#/lib/user.ts";
 import { makeSettingsTabs } from "#/lib/settings-tabs.ts";
 import { Layout } from "#/components/layout.tsx";
 import { Navbar } from "#/components/navbar.tsx";
-import { SettingsLayout } from "./settings-layout.tsx";
+import { SettingsLayout } from "#/components/settings-layout.tsx";
 import { ProfileForm } from "./profile-form.tsx";
 import { ProfileFormDangerZoneForm } from "./profile-form-danger-zone.tsx";
 

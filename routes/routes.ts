@@ -1,11 +1,12 @@
 import type { Route } from "@std/http";
 import { serveDir } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
-import { makeLandingPageHandler } from "./landing-page.tsx";
-import { makeProfilesHandler } from "./profiles.ts";
-import { makeProfileLinkHandler } from "./profile-link.ts";
-import { makeProfileSettingsPageHandler } from "./profile-settings-page.tsx";
-import { makeUserPageHandler } from "./user-page.tsx";
+import { makeProfilesAPIHandler } from "./api/profiles-api-handler.ts";
+import { makeLinksAPIHandler } from "./api/links-api-handler.ts";
+import { makeLandingPageHandler } from "./landing-page/landing-page-handler.tsx";
+import { makeProfileLinksSettingsPageHandler } from "./profile-links-settings-page/profile-links-settings-page-handler.tsx";
+import { makeProfileGeneralSettingsPageHandler } from "./profile-general-settings-page/profile-general-settings-page-handler.tsx";
+import { makeUserPageHandler } from "./user-page/user-page-handler.tsx";
 
 /**
  * makeLinklabRoutes makes an array of Routes for Linklab.
@@ -13,24 +14,30 @@ import { makeUserPageHandler } from "./user-page.tsx";
 export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
   return [
     {
+      pattern: new URLPattern({ pathname: "/api/profiles" }),
+      handler: makeProfilesAPIHandler(kv, helpers),
+    },
+    {
+      pattern: new URLPattern({
+        pathname: "/api/profiles/:id/links/{:index}?",
+      }),
+      handler: makeLinksAPIHandler(kv, helpers),
+    },
+    {
+      method: "GET",
       pattern: new URLPattern({ pathname: "/" }),
       handler: makeLandingPageHandler(kv, helpers),
     },
-    // TODO: Move to /api subdir.
-    {
-      pattern: new URLPattern({ pathname: "/profiles" }),
-      handler: makeProfilesHandler(kv, helpers),
-    },
     {
       pattern: new URLPattern({ pathname: "/profiles/:id" }),
-      handler: makeProfileSettingsPageHandler(kv, helpers),
-    },
-    // TODO: Move to /api subdir.
-    {
-      pattern: new URLPattern({ pathname: "/profiles/:id/links/{:index}?" }),
-      handler: makeProfileLinkHandler(kv, helpers),
+      handler: makeProfileGeneralSettingsPageHandler(kv, helpers),
     },
     {
+      pattern: new URLPattern({ pathname: "/profiles/:id/links" }),
+      handler: makeProfileLinksSettingsPageHandler(kv, helpers),
+    },
+    {
+      method: "GET",
       pattern: new URLPattern({ pathname: "/users/:login" }),
       handler: makeUserPageHandler(kv, helpers),
     },

@@ -7,7 +7,7 @@ import {
   setProfileByID,
 } from "#/lib/kv-linklab.ts";
 
-export function makeProfileLinkHandler(
+export function makeLinksAPIHandler(
   kv: Deno.Kv,
   { getSessionId }: Helpers,
 ): Handler {

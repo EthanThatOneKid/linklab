@@ -13,7 +13,7 @@ import {
  *
  * Update if the user is the profile owner or create if the profile does not exist.
  */
-export function makeProfilesHandler(
+export function makeProfilesAPIHandler(
   kv: Deno.Kv,
   { getSessionId }: Helpers,
 ): Handler {
