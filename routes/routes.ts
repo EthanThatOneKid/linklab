@@ -29,10 +29,12 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
       handler: makeLandingPageHandler(kv, helpers),
     },
     {
+      method: "GET",
       pattern: new URLPattern({ pathname: "/profiles/:id" }),
       handler: makeProfileGeneralSettingsPageHandler(kv, helpers),
     },
     {
+      method: "GET",
       pattern: new URLPattern({ pathname: "/profiles/:id/links" }),
       handler: makeProfileLinksSettingsPageHandler(kv, helpers),
     },
