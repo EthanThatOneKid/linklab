@@ -12,7 +12,7 @@ export function makeSettingsTabs(
     },
     {
       href: makeProfileLinksURL(profileID),
-      content: "Links settings",
+      content: "Manage links",
       isActive: activeTab === "links",
     },
   ];

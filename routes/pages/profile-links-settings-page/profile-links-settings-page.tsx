@@ -27,10 +27,10 @@ export function ProfileLinksSettingsPage(props: LinksPageProps) {
           tabs={makeSettingsTabs("links", props.profile.id)}
         >
           <DIV>
-            <H3>Links settings</H3>
+            <H3>Manage links</H3>
             <P>
-              This form contains links of the profile in question. Click the
-              update button to confirm changes.
+              Manage your profile's links. You can add, move, and remove links
+              here.
             </P>
 
             {props.profile.links === undefined ||
