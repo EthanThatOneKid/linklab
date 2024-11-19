@@ -4,10 +4,10 @@ import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
 
 /**
- * makeProfilesTransferAPIHandler makes an endpoint for transferring a profile to
- * another user.
+ * makeProfilesMoveAPIHandler makes an endpoint for move a profile link in
+ * the profile's list of links.
  */
-export function makeProfilesTransferAPIHandler(
+export function makeProfilesMoveAPIHandler(
   kv: Deno.Kv,
   { getSessionId }: Helpers,
 ): Handler {
@@ -39,7 +39,7 @@ export function makeProfilesTransferAPIHandler(
       return new Response("Forbidden", { status: 403 });
     }
 
-    // Get the user login from the request.
+    // Get the link index from the request.
     throw new Error("Not implemented");
   };
 }

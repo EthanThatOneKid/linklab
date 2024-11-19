@@ -5,6 +5,8 @@ import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { addProfileByGitHubUserID } from "#/lib/kv/add-profile-by-github-user-id.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
 import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
+import { makeProfileURL, makeUserURL } from "#/lib/urls.ts";
+import { deleteProfileByProfileID } from "#/lib/kv/delete-profile-by-profile-id.ts";
 
 /**
  * makeProfilesHandler makes an endpoint for creating or updating a profile.
@@ -51,6 +53,21 @@ export function makeProfilesAPIHandler(
     // Check if the profile ID is claimed.
     const existingProfile = await getProfileByProfileID(kv, profile.id);
 
+    // Delete the profile if it exists and the request method is DELETE.
+    if (request.method === "DELETE") {
+      if (
+        existingProfile.value?.ownerGitHubUserID !== user.value.githubID
+      ) {
+        return new Response("Unauthorized", { status: 401 });
+      }
+
+      await deleteProfileByProfileID(kv, profile.id);
+      return new Response(null, {
+        status: 303,
+        headers: new Headers({ Location: makeUserURL(user.value.githubLogin) }),
+      });
+    }
+
     // If the profile does not exist, create a new one.
     if (existingProfile.value === null) {
       const result0 = await setProfileByProfileID(kv, {
@@ -73,7 +90,7 @@ export function makeProfilesAPIHandler(
 
       return new Response(null, {
         status: 303,
-        headers: new Headers({ Location: `/${profile.id}` }),
+        headers: new Headers({ Location: makeProfileURL(profile.id) }),
       });
     }
 
@@ -96,7 +113,7 @@ export function makeProfilesAPIHandler(
 
     return new Response(null, {
       status: 303,
-      headers: new Headers({ Location: `/${profile.id}` }),
+      headers: new Headers({ Location: makeProfileURL(profile.id) }),
     });
   };
 }
