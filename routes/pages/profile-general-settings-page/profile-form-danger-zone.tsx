@@ -1,6 +1,6 @@
 import { BR, BUTTON, DIV, FORM, H4, INPUT, P } from "@fartlabs/htx";
 import type { Profile } from "#/lib/profile.ts";
-import { makeProfilesURL, makeProfileTransferURL } from "#/lib/urls.ts";
+import { API_PREFIX, makeProfilesURL } from "#/lib/urls.ts";
 
 interface ProfileDangerZoneFormProps {
   value: Profile;
@@ -15,7 +15,7 @@ export function ProfileFormDangerZoneForm(props: ProfileDangerZoneFormProps) {
         the delete button to confirm deletion. Proceed with caution.
       </P>
       <FORM
-        action={makeProfilesURL()}
+        action={API_PREFIX + makeProfilesURL()}
         method="DELETE"
       >
         <INPUT
@@ -30,7 +30,7 @@ export function ProfileFormDangerZoneForm(props: ProfileDangerZoneFormProps) {
       </FORM>
 
       <H4>Transfer profile</H4>
-      <FORM action={makeProfileTransferURL(props.value.id)}>
+      <FORM action={API_PREFIX + makeProfilesURL() + "/transfer"}>
         <INPUT
           type="hidden"
           name="id"
@@ -39,7 +39,7 @@ export function ProfileFormDangerZoneForm(props: ProfileDangerZoneFormProps) {
         <INPUT
           type="text"
           name="newOwnerGitHubLogin"
-          placeholder="New owner"
+          placeholder="New owner's login"
           required="true"
         />
         <BR />

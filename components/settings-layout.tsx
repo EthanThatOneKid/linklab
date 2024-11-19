@@ -11,7 +11,7 @@ export interface SettingsLayoutProps {
 export function SettingsLayout(props: SettingsLayoutProps) {
   return (
     <DIV>
-      <H2>Profile settings: @{props.profile.id}</H2>
+      <H2>@{props.profile.id}</H2>
       <UL class="tabs">
         {props.tabs
           .map((tab) => (

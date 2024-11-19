@@ -1,11 +1,11 @@
 import { BUTTON, FORM, INPUT } from "@fartlabs/htx";
 import { renderStyle } from "@fartlabs/htx/render";
-import { makeProfilesURL } from "#/lib/urls.ts";
+import { API_PREFIX, makeProfilesURL } from "#/lib/urls.ts";
 
 export function ClaimProfileForm() {
   return (
     <FORM
-      action={makeProfilesURL()}
+      action={API_PREFIX + makeProfilesURL()}
       style={renderStyle({
         display: "flex",
         "flex-direction": "row",

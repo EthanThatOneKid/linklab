@@ -4,6 +4,7 @@ import type { Profile } from "#/lib/profile.ts";
 import { Layout } from "#/components/layout.tsx";
 import { Navbar } from "#/components/navbar.tsx";
 import { ClaimProfileForm } from "#/components/claim-profile-form.tsx";
+import { makeProfileURL } from "#/lib/urls.ts";
 
 export interface UserPageProps {
   user: User;
@@ -18,13 +19,13 @@ export function UserPage(props: UserPageProps) {
       <SECTION class="fart-section">
         <Navbar user={props.user} />
         <H1>@{props.pageOwner.githubLogin}</H1>
-        <H2>{isPageOwner ? "Your" : "Their"} profiles:</H2>
+        <H2>{isPageOwner ? "Your" : "Their"} profiles</H2>
 
         {props.profiles.length === 0 ? <P>No profiles yet.</P> : (
           <UL>
             {props.profiles.map((profile) => (
               <LI>
-                <A href={`/profiles/${profile.id}`}>
+                <A href={makeProfileURL(profile.id)}>
                   {`@${profile.id}${profile.title ? `: ${profile.title}` : ""}`}
                 </A>
               </LI>

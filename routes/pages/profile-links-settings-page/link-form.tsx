@@ -1,6 +1,6 @@
 import { BR, BUTTON, FORM, INPUT, LABEL } from "@fartlabs/htx";
 import type { ProfileLink } from "#/lib/profile.ts";
-import { makeProfileLinkURL } from "#/lib/urls.ts";
+import { API_PREFIX, makeProfileLinkURL } from "#/lib/urls.ts";
 
 interface LinkFormProps {
   parentID: string;
@@ -10,7 +10,10 @@ interface LinkFormProps {
 
 export function LinkForm(props: LinkFormProps) {
   return (
-    <FORM action={makeProfileLinkURL(props.parentID, props.index.toString())}>
+    <FORM
+      action={API_PREFIX +
+        makeProfileLinkURL(props.parentID, props.index.toString())}
+    >
       <LABEL for={`link-${props.index}-url`}>
         Link URL{" "}
         <INPUT

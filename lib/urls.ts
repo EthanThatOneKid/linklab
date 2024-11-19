@@ -1,3 +1,5 @@
+export const API_PREFIX = "/api";
+
 export function makeProfilesURL(): string {
   return "/profiles";
 }
@@ -6,16 +8,12 @@ export function makeProfileURL(profileID: string): string {
   return `${makeProfilesURL()}/${profileID}`;
 }
 
-export function makeProfileTransferURL(profileID: string): string {
-  return `${makeProfileURL(profileID)}/transfer`;
-}
-
 export function makeProfileLinksURL(profileID: string): string {
   return `${makeProfileURL(profileID)}/links`;
 }
 
-export function makeProfileLinkURL(profileID: string, linkID: string): string {
-  return `${makeProfileLinksURL(profileID)}/${linkID}`;
+export function makeProfileLinkURL(profileID: string, linkID?: string): string {
+  return `${makeProfileLinksURL(profileID)}${linkID ? `/${linkID}` : ""}`;
 }
 
 export function makeUsersURL(): string {
