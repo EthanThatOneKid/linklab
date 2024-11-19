@@ -6,6 +6,8 @@ import { makeLinksAPIHandler } from "./api/links-api-handler.ts";
 import { makeLandingPageHandler } from "./pages/landing-page/landing-page-handler.tsx";
 import { makeProfileLinksSettingsPageHandler } from "./pages/profile-links-settings-page/profile-links-settings-page-handler.tsx";
 import { makeProfileGeneralSettingsPageHandler } from "./pages/profile-general-settings-page/profile-general-settings-page-handler.tsx";
+import { makeProfilesMoveAPIHandler } from "./api/profiles-move-api-handler.ts";
+import { makeProfilesTransferAPIHandler } from "./api/profiles-transfer-api-handler.ts";
 import { makeUserPageHandler } from "./pages/user-page/user-page-handler.tsx";
 
 /**
@@ -23,6 +25,18 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
       }),
       handler: makeLinksAPIHandler(kv, helpers),
     },
+    {
+      pattern: new URLPattern({ pathname: "/api/profiles/:id/transfer" }),
+      handler: makeProfilesTransferAPIHandler(kv, helpers),
+    },
+    {
+      pattern: new URLPattern({ pathname: "/api/profiles/:id/move" }),
+      handler: makeProfilesMoveAPIHandler(kv, helpers),
+    },
+    // TODO: Add more routes here.
+    // - GET,POST /api/profiles/:id/deployments
+    // - /api/profiles/:id/deployments/:deployment-id/logs
+    //
     {
       method: "GET",
       pattern: new URLPattern({ pathname: "/" }),

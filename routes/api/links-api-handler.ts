@@ -4,6 +4,7 @@ import type { ProfileLink } from "#/lib/profile.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
 import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
+import { makeProfileURL } from "#/lib/urls.ts";
 
 export function makeLinksAPIHandler(
   kv: Deno.Kv,
@@ -64,7 +65,7 @@ export function makeLinksAPIHandler(
 
     return new Response(null, {
       status: 303,
-      headers: new Headers({ Location: `/${profile.value.id}` }),
+      headers: new Headers({ Location: makeProfileURL(profileID) }),
     });
   };
 }
