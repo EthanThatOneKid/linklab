@@ -1,6 +1,6 @@
 import type { Profile } from "#/lib/profile.ts";
 import { BR, BUTTON, FORM, INPUT, LABEL, TEXTAREA } from "@fartlabs/htx";
-import { API_PREFIX, makeProfilesURL } from "#/lib/urls.ts";
+import { API_PREFIX, makeProfileURL } from "#/lib/urls.ts";
 import { CSS3CompatibilityBadge } from "#/components/css3-compatibility-badge.tsx";
 
 export interface ProfileFormProps {
@@ -9,13 +9,7 @@ export interface ProfileFormProps {
 
 export function ProfileForm(props: ProfileFormProps) {
   return (
-    <FORM action={API_PREFIX + makeProfilesURL()}>
-      <INPUT
-        type="hidden"
-        id="id"
-        name="id"
-        value={props.value.id}
-      />
+    <FORM method="POST" action={API_PREFIX + makeProfileURL(props.value.id)}>
       <LABEL for="title">
         Title{" "}
         <INPUT

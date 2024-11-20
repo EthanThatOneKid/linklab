@@ -34,6 +34,8 @@ export function makeProfilesAPIHandler(
     }
 
     // Get the profile data from the request.
+    // TODO: Fix http://localhost:8000/api/profiles/etok NOT FOUND.
+    //
     const profile = parseProfileFromRequest(request);
     if (profile.id === undefined) {
       return new Response("Bad request", { status: 400 });
