@@ -41,7 +41,8 @@ export function makeLinksAPIHandler(
     }
 
     // Parse the link data from the request.
-    const profileLink = parseProfileLinkFromRequest(request);
+    const formData = await request.formData();
+    const profileLink = parseProfileLinkFormData(formData);
     if (profileLink === null) {
       return new Response("Bad request", { status: 400 });
     }
@@ -49,7 +50,6 @@ export function makeLinksAPIHandler(
     // Get the link index from the request.
     const index = params?.pathname?.groups?.index;
     const profileLinks = profile.value.links ?? [];
-    console.log({ index, profileLinks, method: request.method });
     if (index === undefined) {
       // Add the link at the end of the list.
       profileLinks.push(profileLink);
@@ -57,24 +57,6 @@ export function makeLinksAPIHandler(
       const indexNumber = parseInt(index, 10);
       if (isNaN(indexNumber)) {
         return new Response("Bad request", { status: 400 });
-      }
-
-      // Delete if method is DELETE.
-      if (request.method === "DELETE") {
-        // console.log({ indexNumber });
-        profileLinks.splice(indexNumber, 1);
-        const result = await setProfileByProfileID(kv, {
-          ...profile.value,
-          links: profileLinks,
-        });
-        if (!result.ok) {
-          return new Response("Internal server error", { status: 500 });
-        }
-
-        return new Response(null, {
-          status: 303,
-          headers: new Headers({ Location: makeProfileLinksURL(profileID) }),
-        });
       }
 
       // Update the profile link.
@@ -96,22 +78,25 @@ export function makeLinksAPIHandler(
   };
 }
 
-function parseProfileLinkFromRequest(request: Request): ProfileLink {
-  const { searchParams } = new URL(request.url);
-  const url = searchParams.get("url");
+function parseProfileLinkFormData(formData: FormData): ProfileLink {
+  const url = formData.get("url");
   if (url === null) {
     throw new Error("Missing URL");
   }
 
-  const title = searchParams.get("title");
+  const title = formData.get("title");
   if (title === null) {
     throw new Error("Missing title");
   }
 
-  const iconURL = searchParams.get("iconURL");
+  const iconURL = formData.get("iconURL");
   if (iconURL === null) {
     throw new Error("Missing icon URL");
   }
 
-  return { url, title, iconURL };
+  return {
+    url: url.toString(),
+    title: title.toString(),
+    iconURL: iconURL.toString(),
+  };
 }

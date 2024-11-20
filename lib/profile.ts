@@ -4,12 +4,12 @@
 export interface Profile {
   id: string;
   ownerGitHubUserID: string;
+  links: ProfileLink[];
   title?: string;
   description?: string;
   iconURL?: string;
   colorStyle?: string;
   backgroundStyle?: string;
-  links?: ProfileLink[];
 }
 
 /**

@@ -30,7 +30,7 @@ export function makeProfilesAPIHandler(
     // Get the user from the session ID.
     const user = await getUserBySessionID(kv, sessionID);
     if (user.value === null) {
-      return new Response("Internal server error", { status: 500 });
+      return new Response("Unauthorized", { status: 401 });
     }
 
     // Get the profile data from the request.
@@ -74,6 +74,7 @@ export function makeProfilesAPIHandler(
         ...profile,
         id: profile.id,
         ownerGitHubUserID: user.value.githubID,
+        links: [],
       });
       if (!result0.ok) {
         return new Response("Internal server error", { status: 500 });

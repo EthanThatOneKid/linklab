@@ -4,6 +4,7 @@ import type { Helpers } from "@deno/kv-oauth";
 import { makeProfilesAPIHandler } from "./api/profiles-api-handler.ts";
 import { makeLinksAPIHandler } from "./api/links-api-handler.ts";
 import { makeProfileDeleteAPIHandler } from "./api/profile-delete-api-handler.ts";
+import { makeLinkDeleteAPIHandler } from "./api/link-delete-api-handler.ts";
 // import { makeProfilesMoveAPIHandler } from "./api/profiles-move-api-handler.ts";
 // import { makeProfilesTransferAPIHandler } from "./api/profiles-transfer-api-handler.ts";
 import { makeLandingPageHandler } from "./pages/landing-page/landing-page-handler.tsx";
@@ -17,10 +18,12 @@ import { makeUserPageHandler } from "./pages/user-page/user-page-handler.tsx";
 export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
   return [
     {
+      method: "POST",
       pattern: new URLPattern({ pathname: "/api/profiles" }),
       handler: makeProfilesAPIHandler(kv, helpers),
     },
     {
+      method: "POST",
       pattern: new URLPattern({
         pathname: "/api/profiles/:id/links{/:index}?",
       }),
@@ -49,6 +52,13 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
     // - POST /api/profiles/:id/move moves a link
     // - POST /api/profiles/:id/links creates a new link
     // - POST /api/profiles/:id/links/:index/delete deletes a link
+    {
+      method: "POST",
+      pattern: new URLPattern({
+        pathname: "/api/profiles/:id/links/:index/delete",
+      }),
+      handler: makeLinkDeleteAPIHandler(kv, helpers),
+    },
     // - GET /api/profiles/:id/deployments gets a list of deployments
     // - POST /api/profiles/:id/deployments creates a new deployment
     // - GET /api/profiles/:id/deployments/:deployment-id gets a deployment
