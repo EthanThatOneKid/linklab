@@ -11,7 +11,10 @@ interface LinkFormAddProps {
 export function LinkFormAdd(props: LinkFormAddProps) {
   return (
     <DIV>
-      <FORM action={API_PREFIX + makeProfileLinksURL(props.parentID)}>
+      <FORM
+        method="POST"
+        action={API_PREFIX + makeProfileLinksURL(props.parentID)}
+      >
         <LABEL for="url">
           Link URL{" "}
           <INPUT
