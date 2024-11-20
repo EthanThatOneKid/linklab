@@ -4,7 +4,7 @@ import type { ProfileLink } from "#/lib/profile.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
 import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
-import { makeProfileURL } from "#/lib/urls.ts";
+import { makeProfileLinksURL } from "#/lib/urls.ts";
 
 export function makeLinksAPIHandler(
   kv: Deno.Kv,
@@ -35,15 +35,9 @@ export function makeLinksAPIHandler(
       return new Response("Not found", { status: 404 });
     }
 
-    // Get the link index from the request.
-    const index = params?.pathname?.groups?.index;
-    if (index === undefined) {
-      return new Response("Bad request", { status: 400 });
-    }
-
-    const indexNumber = parseInt(index, 10);
-    if (isNaN(indexNumber)) {
-      return new Response("Bad request", { status: 400 });
+    // Error if the profile is not owned by the user.
+    if (profile.value.ownerGitHubUserID !== user.value.githubID) {
+      return new Response("Forbidden", { status: 403 });
     }
 
     // Parse the link data from the request.
@@ -52,9 +46,41 @@ export function makeLinksAPIHandler(
       return new Response("Bad request", { status: 400 });
     }
 
-    // Update the profile link.
+    // Get the link index from the request.
+    const index = params?.pathname?.groups?.index;
     const profileLinks = profile.value.links ?? [];
-    profileLinks[indexNumber] = profileLink;
+    console.log({ index, profileLinks, method: request.method });
+    if (index === undefined) {
+      // Add the link at the end of the list.
+      profileLinks.push(profileLink);
+    } else {
+      const indexNumber = parseInt(index, 10);
+      if (isNaN(indexNumber)) {
+        return new Response("Bad request", { status: 400 });
+      }
+
+      // Delete if method is DELETE.
+      if (request.method === "DELETE") {
+        // console.log({ indexNumber });
+        profileLinks.splice(indexNumber, 1);
+        const result = await setProfileByProfileID(kv, {
+          ...profile.value,
+          links: profileLinks,
+        });
+        if (!result.ok) {
+          return new Response("Internal server error", { status: 500 });
+        }
+
+        return new Response(null, {
+          status: 303,
+          headers: new Headers({ Location: makeProfileLinksURL(profileID) }),
+        });
+      }
+
+      // Update the profile link.
+      profileLinks[indexNumber] = profileLink;
+    }
+
     const result = await setProfileByProfileID(kv, {
       ...profile.value,
       links: profileLinks,
@@ -65,7 +91,7 @@ export function makeLinksAPIHandler(
 
     return new Response(null, {
       status: 303,
-      headers: new Headers({ Location: makeProfileURL(profileID) }),
+      headers: new Headers({ Location: makeProfileLinksURL(profileID) }),
     });
   };
 }

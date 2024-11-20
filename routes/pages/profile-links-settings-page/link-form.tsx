@@ -14,38 +14,38 @@ export function LinkForm(props: LinkFormProps) {
       action={API_PREFIX +
         makeProfileLinkURL(props.parentID, props.index.toString())}
     >
-      <LABEL for={`link-${props.index}-url`}>
+      <LABEL for="url">
         Link URL{" "}
         <INPUT
-          id={`link-${props.index}-url`}
-          name={`link-${props.index}-url`}
+          id="url"
+          name="url"
           value={props.value.url}
           placeholder="No value provided"
         />
       </LABEL>
       <BR />
-      <LABEL for={`link-${props.index}-title`}>
+      <LABEL for="title">
         Link Title{" "}
         <INPUT
-          id={`link-${props.index}-title`}
-          name={`link-${props.index}-title`}
+          id="title"
+          name="title"
           value={props.value.title}
           placeholder="No value provided"
         />
       </LABEL>
       <BR />
-      <LABEL for={`link-${props.index}-iconURL`}>
+      <LABEL for="iconURL">
         Link Icon URL{" "}
         <INPUT
-          id={`link-${props.index}-iconURL`}
-          name={`link-${props.index}-iconURL`}
+          id="iconURL"
+          name="iconURL"
           value={props.value.iconURL}
           placeholder="No value provided"
         />
       </LABEL>
       <BR />
       <BUTTON type="submit" class="fart-button">Update</BUTTON>
-      <BUTTON formmethod="DELETE" type="submit" class="fart-button">
+      <BUTTON formmethod="DELETE" class="fart-button">
         Delete
       </BUTTON>
     </FORM>

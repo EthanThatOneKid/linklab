@@ -13,7 +13,9 @@ export function makeProfileLinksURL(profileID: string): string {
 }
 
 export function makeProfileLinkURL(profileID: string, linkID?: string): string {
-  return `${makeProfileLinksURL(profileID)}${linkID ? `/${linkID}` : ""}`;
+  return `${makeProfileLinksURL(profileID)}${
+    linkID !== undefined ? `/${linkID}` : ""
+  }`;
 }
 
 export function makeUsersURL(): string {
