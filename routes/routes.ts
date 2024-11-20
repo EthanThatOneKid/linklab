@@ -5,8 +5,7 @@ import { makeProfilesAPIHandler } from "./api/profiles-api-handler.ts";
 import { makeLinksAPIHandler } from "./api/links-api-handler.ts";
 import { makeProfileDeleteAPIHandler } from "./api/profile-delete-api-handler.ts";
 import { makeLinkDeleteAPIHandler } from "./api/link-delete-api-handler.ts";
-// import { makeProfilesMoveAPIHandler } from "./api/profiles-move-api-handler.ts";
-// import { makeProfilesTransferAPIHandler } from "./api/profiles-transfer-api-handler.ts";
+import { makeProfilesMoveAPIHandler } from "./api/profiles-move-api-handler.ts";
 import { makeLandingPageHandler } from "./pages/landing-page/landing-page-handler.tsx";
 import { makeProfileLinksSettingsPageHandler } from "./pages/profile-links-settings-page/profile-links-settings-page-handler.tsx";
 import { makeProfileGeneralSettingsPageHandler } from "./pages/profile-general-settings-page/profile-general-settings-page-handler.tsx";
@@ -39,6 +38,14 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
     //   pattern: new URLPattern({ pathname: "/api/profiles/:id/move" }),
     //   handler: makeProfilesMoveAPIHandler(kv, helpers),
     // },
+    {
+      method: "POST",
+      pattern: new URLPattern({
+        pathname: "/api/profiles/:id/links/:index/move",
+      }),
+      handler: makeProfilesMoveAPIHandler(kv, helpers),
+    },
+
     //
     // TODO: Add more routes here.
     // - POST /api/profiles/:id/delete deletes a profile

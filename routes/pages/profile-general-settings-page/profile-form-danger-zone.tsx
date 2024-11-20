@@ -9,20 +9,7 @@ interface ProfileDangerZoneFormProps {
 export function ProfileFormDangerZoneForm(props: ProfileDangerZoneFormProps) {
   return (
     <DIV>
-      <H4>Delete profile</H4>
-      <P>
-        This form contains the delete button for the profile in question. Click
-        the delete button to confirm deletion. Proceed with caution.
-      </P>
-
-      <FORM
-        action={API_PREFIX + makeProfileURL(props.value.id) + "/delete"}
-        method="POST"
-      >
-        <BUTTON type="submit" class="fart-button">
-          Delete profile
-        </BUTTON>
-      </FORM>
+      {/* TODO: Add form for changing profile ID. */}
 
       <H4>Transfer profile</H4>
       <P>
@@ -49,6 +36,21 @@ export function ProfileFormDangerZoneForm(props: ProfileDangerZoneFormProps) {
 
         <BUTTON type="submit" class="fart-button">
           Transfer profile
+        </BUTTON>
+      </FORM>
+
+      <H4>Delete profile</H4>
+      <P>
+        This form contains the delete button for the profile in question. Click
+        the delete button to confirm deletion. Proceed with caution.
+      </P>
+
+      <FORM
+        action={API_PREFIX + makeProfileURL(props.value.id) + "/delete"}
+        method="POST"
+      >
+        <BUTTON type="submit" class="fart-button">
+          Delete profile
         </BUTTON>
       </FORM>
     </DIV>

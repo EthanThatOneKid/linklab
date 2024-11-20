@@ -2,6 +2,8 @@ import type { Handler } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
 import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
+import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
+import { makeProfileLinksURL } from "#/lib/urls.ts";
 
 /**
  * makeProfilesMoveAPIHandler makes an endpoint for move a profile link in
@@ -39,7 +41,36 @@ export function makeProfilesMoveAPIHandler(
       return new Response("Forbidden", { status: 403 });
     }
 
-    // Get the link index from the request.
-    throw new Error("Not implemented");
+    const indexString = params?.pathname?.groups?.index;
+    if (indexString === undefined) {
+      return new Response("Bad request", { status: 400 });
+    }
+
+    const index = parseInt(indexString, 10);
+    if (isNaN(index)) {
+      return new Response("Bad request", { status: 400 });
+    }
+
+    const formData = await request.formData();
+    const newIndexString = formData.get("newIndex")?.toString();
+    if (newIndexString === undefined) {
+      return new Response("Bad request", { status: 400 });
+    }
+
+    const newIndex = parseInt(newIndexString, 10);
+    if (isNaN(newIndex)) {
+      return new Response("Bad request", { status: 400 });
+    }
+
+    // Move the link in the profile's list of links.
+    const link = profile.value.links[index];
+    profile.value.links.splice(index, 1);
+    profile.value.links.splice(newIndex, 0, link);
+    await setProfileByProfileID(kv, profile.value);
+
+    return new Response(null, {
+      status: 303,
+      headers: new Headers({ Location: makeProfileLinksURL(profileID) }),
+    });
   };
 }

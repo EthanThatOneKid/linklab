@@ -35,7 +35,6 @@ export function makeProfilesAPIHandler(
 
     const formData = await request.formData();
     const profile = parseProfileFormData(formData);
-    console.log({ profile });
     if (profile.id === undefined) {
       return new Response("Bad request", { status: 400 });
     }

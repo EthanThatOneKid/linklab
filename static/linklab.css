@@ -51,3 +51,28 @@ br {
   background-color: var(--fart-darker-dark-green);
   color: var(--fart-green);
 }
+
+.required:after {
+  content: " *";
+  color: red;
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: none;
+  border-bottom: 2px solid var(--fart-darker-dark-green);
+  transition: border-color 0.3s;
+  font-size: 16px;
+  border-radius: 4px;
+  color: var(--fart-offwhite);
+  background-color: var(--fart-darker-dark-green);
+  display: block;
+}
+
+select:focus {
+  outline: none;
+  color: var(--fart-green);
+  border-bottom: 2px solid var(--fart-green);
+}
