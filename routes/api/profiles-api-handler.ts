@@ -33,7 +33,9 @@ export function makeProfilesAPIHandler(
       return new Response("Unauthorized", { status: 401 });
     }
 
-    const profile = parseProfileFromRequest(request);
+    const formData = await request.formData();
+    const profile = parseProfileFormData(formData);
+    console.log({ profile });
     if (profile.id === undefined) {
       return new Response("Bad request", { status: 400 });
     }
@@ -118,15 +120,13 @@ export function makeProfilesAPIHandler(
   };
 }
 
-function parseProfileFromRequest(request: Request): Partial<Profile> {
-  // TODO: Refactor to use FormData.
-  const { searchParams } = new URL(request.url);
+function parseProfileFormData(formData: FormData): Partial<Profile> {
   return {
-    id: searchParams.get("id") ?? undefined,
-    title: searchParams.get("title") ?? undefined,
-    description: searchParams.get("description") ?? undefined,
-    iconURL: searchParams.get("iconURL") ?? undefined,
-    colorStyle: searchParams.get("colorStyle") ?? undefined,
-    backgroundStyle: searchParams.get("backgroundStyle") ?? undefined,
+    id: formData.get("id")?.toString() ?? undefined,
+    title: formData.get("title")?.toString() ?? undefined,
+    description: formData.get("description")?.toString() ?? undefined,
+    iconURL: formData.get("iconURL")?.toString() ?? undefined,
+    colorStyle: formData.get("colorStyle")?.toString() ?? undefined,
+    backgroundStyle: formData.get("backgroundStyle")?.toString() ?? undefined,
   };
 }

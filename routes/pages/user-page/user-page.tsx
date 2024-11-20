@@ -1,4 +1,4 @@
-import { A, BR, H1, H2, LI, P, SECTION, UL } from "@fartlabs/htx";
+import { A, H1, H2, LI, P, SECTION, UL } from "@fartlabs/htx";
 import type { User } from "#/lib/user.ts";
 import type { Profile } from "#/lib/profile.ts";
 import { Layout } from "#/components/layout.tsx";
@@ -19,21 +19,32 @@ export function UserPage(props: UserPageProps) {
       <SECTION class="fart-section">
         <Navbar user={props.user} />
         <H1>{props.pageOwner.githubLogin}</H1>
-        <H2>{isPageOwner ? "Your" : "Their"} profiles</H2>
+        <SECTION>
+          <H2>{isPageOwner ? "Your" : "Their"} profiles</H2>
 
-        {props.profiles.length === 0 ? <P>No profiles yet.</P> : (
-          <UL>
-            {props.profiles.map((profile) => (
-              <LI>
-                <A href={makeProfileURL(profile.id)}>
-                  {`@${profile.id}${profile.title ? `: ${profile.title}` : ""}`}
-                </A>
-              </LI>
-            ))}
-          </UL>
-        )}
-        <BR />
-        {isPageOwner ? <ClaimProfileForm /> : ""}
+          {props.profiles.length === 0 ? <P>No profiles yet.</P> : (
+            <UL>
+              {props.profiles.map((profile) => (
+                <LI>
+                  <A href={makeProfileURL(profile.id)}>
+                    {`@${profile.id}${
+                      profile.title ? `: ${profile.title}` : ""
+                    }`}
+                  </A>
+                </LI>
+              ))}
+            </UL>
+          )}
+        </SECTION>
+
+        {isPageOwner
+          ? (
+            <SECTION>
+              <H2>Claim a profile</H2>
+              <ClaimProfileForm />
+            </SECTION>
+          )
+          : ""}
       </SECTION>
     </Layout>
   );
