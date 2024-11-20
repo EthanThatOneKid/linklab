@@ -5,6 +5,7 @@ import { API_PREFIX, makeProfilesURL } from "#/lib/urls.ts";
 export function ClaimProfileForm() {
   return (
     <FORM
+      method="POST"
       action={API_PREFIX + makeProfilesURL()}
       style={renderStyle({
         display: "flex",
@@ -31,3 +32,7 @@ export function ClaimProfileForm() {
     </FORM>
   );
 }
+
+// TODO: Consider defining HTTP form handler in this file to showcase
+// colocated code. This would be a good example of how to define a handler
+// in a component file.
