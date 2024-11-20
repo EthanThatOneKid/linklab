@@ -3,6 +3,7 @@ import { serveDir } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
 import { makeProfilesAPIHandler } from "./api/profiles-api-handler.ts";
 import { makeLinksAPIHandler } from "./api/links-api-handler.ts";
+import { makeProfileDeleteAPIHandler } from "./api/profile-delete-api-handler.ts";
 // import { makeProfilesMoveAPIHandler } from "./api/profiles-move-api-handler.ts";
 // import { makeProfilesTransferAPIHandler } from "./api/profiles-transfer-api-handler.ts";
 import { makeLandingPageHandler } from "./pages/landing-page/landing-page-handler.tsx";
@@ -35,8 +36,15 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
     //   pattern: new URLPattern({ pathname: "/api/profiles/:id/move" }),
     //   handler: makeProfilesMoveAPIHandler(kv, helpers),
     // },
+    //
     // TODO: Add more routes here.
     // - POST /api/profiles/:id/delete deletes a profile
+    {
+      method: "POST",
+      pattern: new URLPattern({ pathname: "/api/profiles/:id/delete" }),
+      handler: makeProfileDeleteAPIHandler(kv, helpers),
+    },
+    //
     // - POST /api/profiles/:id/transfer transfers a profile
     // - POST /api/profiles/:id/move moves a link
     // - POST /api/profiles/:id/links creates a new link

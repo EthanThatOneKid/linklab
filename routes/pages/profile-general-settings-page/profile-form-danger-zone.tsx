@@ -1,6 +1,6 @@
 import { BR, BUTTON, DIV, FORM, H4, INPUT, P } from "@fartlabs/htx";
 import type { Profile } from "#/lib/profile.ts";
-import { API_PREFIX, makeProfilesURL } from "#/lib/urls.ts";
+import { API_PREFIX, makeProfileURL } from "#/lib/urls.ts";
 
 interface ProfileDangerZoneFormProps {
   value: Profile;
@@ -14,23 +14,25 @@ export function ProfileFormDangerZoneForm(props: ProfileDangerZoneFormProps) {
         This form contains the delete button for the profile in question. Click
         the delete button to confirm deletion. Proceed with caution.
       </P>
-      <FORM
-        action={API_PREFIX + makeProfilesURL()}
-        method="DELETE"
-      >
-        <INPUT
-          type="hidden"
-          name="id"
-          value={props.value.id}
-        />
 
+      <FORM
+        action={API_PREFIX + makeProfileURL(props.value.id) + "/delete"}
+        method="POST"
+      >
         <BUTTON type="submit" class="fart-button">
           Delete profile
         </BUTTON>
       </FORM>
 
       <H4>Transfer profile</H4>
-      <FORM action={API_PREFIX + makeProfilesURL() + "/transfer"}>
+      <P>
+        Transfer the profile to another user. Enter the new owner's login.
+      </P>
+
+      <FORM
+        action={API_PREFIX + makeProfileURL(props.value.id) + "/transfer"}
+        method="POST"
+      >
         <INPUT
           type="hidden"
           name="id"
