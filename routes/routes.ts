@@ -1,12 +1,11 @@
 import type { Route } from "@std/http";
 import { serveDir } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
-import { makeProfilesAPIHandler } from "./api/profiles-api-handler.ts";
+import { makeProfilesPOSTRequestHandler } from "./api/profiles-post-request-handler.tsx";
 import { makeLinksAPIHandler } from "./api/links-api-handler.ts";
 import { makeProfileDeleteAPIHandler } from "./api/profile-delete-api-handler.ts";
 import { makeLinkDeleteAPIHandler } from "./api/link-delete-api-handler.ts";
 import { makeProfilesMoveAPIHandler } from "./api/profiles-move-api-handler.ts";
-import { makeDeploymentsPOSTRequestHandler } from "./api/profiles-deployments-api-handler.ts";
 import { makeLandingPageHandler } from "./pages/landing-page/landing-page-handler.tsx";
 import { makeProfileLinksSettingsPageHandler } from "./pages/profile-links-settings-page/profile-links-settings-page-handler.tsx";
 import { makeProfileGeneralSettingsPageHandler } from "./pages/profile-general-settings-page/profile-general-settings-page-handler.tsx";
@@ -20,7 +19,7 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
     {
       method: "POST",
       pattern: new URLPattern({ pathname: "/api/profiles" }),
-      handler: makeProfilesAPIHandler(kv, helpers),
+      handler: makeProfilesPOSTRequestHandler(kv, helpers),
     },
     {
       method: "POST",
@@ -46,8 +45,6 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
       }),
       handler: makeProfilesMoveAPIHandler(kv, helpers),
     },
-
-    //
     // TODO: Add more routes here.
     // - POST /api/profiles/:id/delete deletes a profile
     {
@@ -68,14 +65,6 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
       handler: makeLinkDeleteAPIHandler(kv, helpers),
     },
     // - GET /api/profiles/:id/deployments gets a list of deployments
-    // - POST /api/profiles/:id/deployments creates a new deployment
-    {
-      method: "POST",
-      pattern: new URLPattern({
-        pathname: "/api/profiles/:id/deployments",
-      }),
-      handler: makeDeploymentsPOSTRequestHandler(kv, helpers),
-    },
     // - GET /api/profiles/:id/deployments/:deployment-id gets a deployment
     // - GET /api/profiles/:id/deployments/:deployment-id/logs gets deployment logs
     //

@@ -1,4 +1,4 @@
-import type { Project } from "subhosting/resources/projects";
+import type { Project } from "subhosting/resources/shared";
 import { kvKeyPrefixLinklab, kvKeyPrefixProjectByProfileID } from "./keys.ts";
 
 export function setProjectByProfileID(

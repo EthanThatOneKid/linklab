@@ -21,6 +21,7 @@ export function SettingsLayout(props: SettingsLayoutProps) {
           {props.owner.githubLogin}
         </A>
       </P>
+      {/* TODO: Link to recently deployed project. */}
 
       <BR />
 

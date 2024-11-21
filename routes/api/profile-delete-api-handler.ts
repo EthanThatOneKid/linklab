@@ -45,6 +45,8 @@ export function makeProfileDeleteAPIHandler(
         .filter((id) => id !== profileID),
     });
 
+    // TODO: Delete the associated Deno Deploy project.
+
     await deleteProfileByProfileID(kv, profileID);
 
     // Redirect to user page.

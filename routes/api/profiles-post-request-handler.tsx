@@ -1,19 +1,23 @@
 import type { Handler } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
+import { Asset, Assets } from "@fartlabs/jsonx/std/assets";
 import type { Profile } from "#/lib/profile.ts";
+import { makeProfileURL } from "#/lib/urls.ts";
+import { subhosting } from "#/lib/subhosting.ts";
 import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { addProfileByGitHubUserID } from "#/lib/kv/add-profile-by-github-user-id.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
 import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
-import { makeProfileURL, makeUserURL } from "#/lib/urls.ts";
-import { deleteProfileByProfileID } from "#/lib/kv/delete-profile-by-profile-id.ts";
+import { getProjectByProfileID } from "#/lib/kv/get-project-by-profile-id.ts";
+import { setProjectByProfileID } from "#/lib/kv/set-project-by-profile-id.ts";
 
 /**
- * makeProfilesHandler makes an endpoint for creating or updating a profile.
+ * makeProfilesPOSTRequestHandler makes an endpoint for creating or updating a
+ * profile.
  *
  * Update if the user is the profile owner or create if the profile does not exist.
  */
-export function makeProfilesAPIHandler(
+export function makeProfilesPOSTRequestHandler(
   kv: Deno.Kv,
   { getSessionId }: Helpers,
 ): Handler {
@@ -53,64 +57,80 @@ export function makeProfilesAPIHandler(
     // Check if the profile ID is claimed.
     const existingProfile = await getProfileByProfileID(kv, profile.id);
 
-    // Delete the profile if it exists and the request method is DELETE.
-    if (request.method === "DELETE") {
-      if (
-        existingProfile.value?.ownerGitHubUserID !== user.value.githubID
-      ) {
-        return new Response("Unauthorized", { status: 401 });
-      }
-
-      await deleteProfileByProfileID(kv, profile.id);
-      return new Response(null, {
-        status: 303,
-        headers: new Headers({ Location: makeUserURL(user.value.githubLogin) }),
-      });
-    }
-
-    // If the profile does not exist, create a new one.
+    let newProfile: Profile;
     if (existingProfile.value === null) {
-      const result0 = await setProfileByProfileID(kv, {
+      newProfile = {
         ...profile,
         id: profile.id,
         ownerGitHubUserID: user.value.githubID,
         links: [],
-      });
-      if (!result0.ok) {
-        return new Response("Internal server error", { status: 500 });
-      }
+      };
 
-      const result1 = await addProfileByGitHubUserID(
+      const result0 = await addProfileByGitHubUserID(
         kv,
         user.value.githubID,
         profile.id,
       );
-      if (!result1.ok) {
+      if (!result0.ok) {
         return new Response("Internal server error", { status: 500 });
       }
 
-      return new Response(null, {
-        status: 303,
-        headers: new Headers({ Location: makeProfileURL(profile.id) }),
-      });
+      // Create a project for the profile.
+      const project = await subhosting.organizations.projects.create(
+        Deno.env.get("DEPLOY_ORG_ID")!,
+        {},
+      );
+
+      // Associate the profile with the project.
+      const result1 = await setProjectByProfileID(
+        kv,
+        profile.id,
+        project,
+      );
+      if (!result1.ok) {
+        return new Response("Internal server error", { status: 500 });
+      }
+    } else {
+      // Prevent user from claiming existing profile.
+      if (
+        existingProfile?.value?.ownerGitHubUserID !==
+          user.value.githubID
+      ) {
+        return new Response("Unauthorized", { status: 401 });
+      }
+
+      newProfile = { ...existingProfile.value, ...profile };
     }
 
-    // Prevent user from claiming existing profile.
-    if (
-      existingProfile?.value?.ownerGitHubUserID !==
-        user.value.githubID
-    ) {
-      return new Response("Unauthorized", { status: 401 });
-    }
-
-    // Update the profile.
-    const result2 = await setProfileByProfileID(kv, {
-      ...existingProfile.value,
-      ...profile,
-    });
-    if (!result2.ok) {
+    const result = await setProfileByProfileID(kv, newProfile);
+    if (!result.ok) {
       return new Response("Internal server error", { status: 500 });
     }
+
+    // Deploy the project.
+    const project = await getProjectByProfileID(kv, profile.id);
+    if (project.value === null) {
+      throw new Error("Project not found");
+    }
+
+    const { assets } = (
+      <Assets>
+        <Asset
+          path="./main.ts"
+          content="Deno.serve((req) => new Response('Hello, world!'));"
+        />
+      </Assets>
+    );
+
+    const deployment = await subhosting.projects.deployments.create(
+      project.value.id,
+      {
+        entryPointUrl: "./main.ts",
+        envVars: {},
+        assets,
+      },
+    );
+    console.log({ deployment, assets, project });
 
     return new Response(null, {
       status: 303,
@@ -119,13 +139,14 @@ export function makeProfilesAPIHandler(
   };
 }
 
-function parseProfileFormData(formData: FormData): Partial<Profile> {
+export function parseProfileFormData(formData: FormData): Partial<Profile> {
   return {
     id: formData.get("id")?.toString() ?? undefined,
     title: formData.get("title")?.toString() ?? undefined,
     description: formData.get("description")?.toString() ?? undefined,
     iconURL: formData.get("iconURL")?.toString() ?? undefined,
     colorStyle: formData.get("colorStyle")?.toString() ?? undefined,
-    backgroundStyle: formData.get("backgroundStyle")?.toString() ?? undefined,
+    backgroundStyle: formData.get("backgroundStyle")?.toString() ??
+      undefined,
   };
 }
