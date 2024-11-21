@@ -2,10 +2,10 @@ import type { Route } from "@std/http";
 import { serveDir } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
 import { makeProfilesPOSTRequestHandler } from "./api/profiles-post-request-handler.tsx";
-import { makeLinksAPIHandler } from "./api/links-api-handler.ts";
-import { makeProfileDeleteAPIHandler } from "./api/profile-delete-api-handler.ts";
-import { makeLinkDeleteAPIHandler } from "./api/link-delete-api-handler.ts";
-import { makeProfilesMoveAPIHandler } from "./api/profiles-move-api-handler.ts";
+import { makeLinksPOSTRequestHandler } from "./api/links-post-request-handler.ts";
+import { makeProfileDELETERequestHandler } from "./api/profile-delete-request-handler.ts";
+import { makeLinkDELETERequestHandler } from "./api/link-delete-request-handler.ts";
+import { makeProfileMovePOSTRequestHandler } from "./api/profile-move-post-request-handler.ts";
 import { makeLandingPageHandler } from "./pages/landing-page/landing-page-handler.tsx";
 import { makeProfileLinksSettingsPageHandler } from "./pages/profile-links-settings-page/profile-links-settings-page-handler.tsx";
 import { makeProfileGeneralSettingsPageHandler } from "./pages/profile-general-settings-page/profile-general-settings-page-handler.tsx";
@@ -26,7 +26,7 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
       pattern: new URLPattern({
         pathname: "/api/profiles/:id/links{/:index}?",
       }),
-      handler: makeLinksAPIHandler(kv, helpers),
+      handler: makeLinksPOSTRequestHandler(kv, helpers),
     },
     // // TODO: Fix handler implementation.
     // {
@@ -43,14 +43,14 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
       pattern: new URLPattern({
         pathname: "/api/profiles/:id/links/:index/move",
       }),
-      handler: makeProfilesMoveAPIHandler(kv, helpers),
+      handler: makeProfileMovePOSTRequestHandler(kv, helpers),
     },
     // TODO: Add more routes here.
     // - POST /api/profiles/:id/delete deletes a profile
     {
       method: "POST",
       pattern: new URLPattern({ pathname: "/api/profiles/:id/delete" }),
-      handler: makeProfileDeleteAPIHandler(kv, helpers),
+      handler: makeProfileDELETERequestHandler(kv, helpers),
     },
     //
     // - POST /api/profiles/:id/transfer transfers a profile
@@ -62,7 +62,7 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
       pattern: new URLPattern({
         pathname: "/api/profiles/:id/links/:index/delete",
       }),
-      handler: makeLinkDeleteAPIHandler(kv, helpers),
+      handler: makeLinkDELETERequestHandler(kv, helpers),
     },
     // - GET /api/profiles/:id/deployments gets a list of deployments
     // - GET /api/profiles/:id/deployments/:deployment-id gets a deployment

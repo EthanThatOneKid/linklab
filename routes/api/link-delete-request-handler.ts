@@ -2,12 +2,10 @@ import type { Handler } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
 import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
+import { makeProfileURL } from "#/lib/urls.ts";
+import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
 
-/**
- * makeProfilesTransferAPIHandler makes an endpoint for transferring a profile to
- * another user.
- */
-export function makeProfilesTransferAPIHandler(
+export function makeLinkDELETERequestHandler(
   kv: Deno.Kv,
   { getSessionId }: Helpers,
 ): Handler {
@@ -39,7 +37,26 @@ export function makeProfilesTransferAPIHandler(
       return new Response("Forbidden", { status: 403 });
     }
 
-    // Get the user login from the request.
-    throw new Error("Not implemented");
+    const indexString = params?.pathname?.groups?.index;
+    if (indexString === undefined) {
+      return new Response("Not found", { status: 404 });
+    }
+
+    const index = parseInt(indexString, 10);
+    if (Number.isNaN(index)) {
+      return new Response("Not found", { status: 404 });
+    }
+
+    // Delete the link from the profile.
+    await setProfileByProfileID(kv, {
+      ...profile.value,
+      links: profile.value.links.filter((_, i) => i !== index),
+    });
+
+    // Redirect to user page.
+    return new Response(null, {
+      status: 302,
+      headers: { "Location": makeProfileURL(profileID) },
+    });
   };
 }

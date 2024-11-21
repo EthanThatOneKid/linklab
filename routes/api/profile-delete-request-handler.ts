@@ -2,10 +2,14 @@ import type { Handler } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
 import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
-import { makeProfileURL } from "#/lib/urls.ts";
-import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
+import { deleteProfileByProfileID } from "#/lib/kv/delete-profile-by-profile-id.ts";
+import { makeUserURL } from "#/lib/urls.ts";
+import { setUserByGitHubUserID } from "#/lib/kv/set-user-by-github-user-id.ts";
+import { subhosting } from "#/lib/subhosting.ts";
+import { getProjectByProfileID } from "#/lib/kv/get-project-by-profile-id.ts";
+import { deleteProjectByProfileID } from "#/lib/kv/delete-project-by-profile-id.ts";
 
-export function makeLinkDeleteAPIHandler(
+export function makeProfileDELETERequestHandler(
   kv: Deno.Kv,
   { getSessionId }: Helpers,
 ): Handler {
@@ -37,26 +41,26 @@ export function makeLinkDeleteAPIHandler(
       return new Response("Forbidden", { status: 403 });
     }
 
-    const indexString = params?.pathname?.groups?.index;
-    if (indexString === undefined) {
-      return new Response("Not found", { status: 404 });
-    }
-
-    const index = parseInt(indexString, 10);
-    if (Number.isNaN(index)) {
-      return new Response("Not found", { status: 404 });
-    }
-
-    // Delete the link from the profile.
-    await setProfileByProfileID(kv, {
-      ...profile.value,
-      links: profile.value.links.filter((_, i) => i !== index),
+    // Delete the profile.
+    await setUserByGitHubUserID(kv, {
+      ...user.value,
+      profilesByID: user.value.profilesByID
+        .filter((id) => id !== profileID),
     });
+
+    // Delete the associated Deno Deploy project.
+    const project = await getProjectByProfileID(kv, profileID);
+    if (project.value !== null) {
+      await subhosting.projects.delete(project.value.id);
+      await deleteProjectByProfileID(kv, profileID);
+    }
+
+    await deleteProfileByProfileID(kv, profileID);
 
     // Redirect to user page.
     return new Response(null, {
       status: 302,
-      headers: { "Location": makeProfileURL(profileID) },
+      headers: { "Location": makeUserURL(user.value.githubLogin) },
     });
   };
 }

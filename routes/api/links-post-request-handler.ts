@@ -7,7 +7,7 @@ import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
 import { makeProfileLinksURL } from "#/lib/urls.ts";
 import { clean } from "#/lib/ammonia.ts";
 
-export function makeLinksAPIHandler(
+export function makeLinksPOSTRequestHandler(
   kv: Deno.Kv,
   { getSessionId }: Helpers,
 ): Handler {

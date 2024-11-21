@@ -6,10 +6,10 @@ import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
 import { makeProfileLinksURL } from "#/lib/urls.ts";
 
 /**
- * makeProfilesMoveAPIHandler makes an endpoint for move a profile link in
- * the profile's list of links.
+ * makeProfileMovePOSTRequestHandler makes an endpoint for move a profile link
+ * in the profile's list of links.
  */
-export function makeProfilesMoveAPIHandler(
+export function makeProfileMovePOSTRequestHandler(
   kv: Deno.Kv,
   { getSessionId }: Helpers,
 ): Handler {
