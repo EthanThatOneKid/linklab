@@ -1,4 +1,4 @@
-import type { Project } from "subhosting/resources/project";
+import type { Project } from "subhosting/resources/shared";
 import { kvKeyPrefixLinklab, kvKeyPrefixProfile } from "./keys.ts";
 
 /**
