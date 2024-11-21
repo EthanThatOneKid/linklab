@@ -1,15 +1,16 @@
 import type { Handler } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
+import { subhosting } from "#/lib/subhosting.ts";
+import { clean } from "#/lib/ammonia.ts";
 import type { Profile } from "#/lib/profile.ts";
 import { makeProfileURL } from "#/lib/urls.ts";
-import { subhosting } from "#/lib/subhosting.ts";
+import { ProjectAssets } from "#/lib/project-assets.tsx";
 import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { addProfileByGitHubUserID } from "#/lib/kv/add-profile-by-github-user-id.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
 import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
 import { getProjectByProfileID } from "#/lib/kv/get-project-by-profile-id.ts";
 import { setProjectByProfileID } from "#/lib/kv/set-project-by-profile-id.ts";
-import { ProjectAssets } from "#/lib/project-assets.tsx";
 
 /**
  * makeProfilesPOSTRequestHandler makes an endpoint for creating or updating a
@@ -132,13 +133,23 @@ export function makeProfilesPOSTRequestHandler(
 }
 
 export function parseProfileFormData(formData: FormData): Partial<Profile> {
-  return {
-    id: formData.get("id")?.toString() ?? undefined,
-    title: formData.get("title")?.toString() ?? undefined,
-    description: formData.get("description")?.toString() ?? undefined,
-    iconURL: formData.get("iconURL")?.toString() ?? undefined,
-    colorStyle: formData.get("colorStyle")?.toString() ?? undefined,
-    backgroundStyle: formData.get("backgroundStyle")?.toString() ??
-      undefined,
-  };
+  const profile: Partial<Profile> = {};
+  profileKeys.forEach((key) => {
+    const value = formData.get(key);
+    if (value === null) {
+      return;
+    }
+
+    profile[key as typeof profileKeys[number]] = clean(value.toString());
+  });
+  return profile;
 }
+
+const profileKeys = [
+  "id",
+  "title",
+  "description",
+  "iconURL",
+  "colorStyle",
+  "backgroundStyle",
+] as const;

@@ -12,7 +12,8 @@
     "@fartlabs/jsonx": "jsr:@fartlabs/jsonx@^0.0.11",
     "@std/http": "jsr:@std/http@^1.0.9",
     "@std/text": "jsr:@std/text@^1.0.8",
-    "subhosting": "npm:subhosting@^0.1.0-alpha.1"
+    "subhosting": "npm:subhosting@^0.1.0-alpha.1",
+    "ammonia": "https://deno.land/x/ammonia@0.3.1/mod.ts"
   },
   "compilerOptions": {
     "jsx": "react-jsx",

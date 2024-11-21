@@ -5,6 +5,7 @@ import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
 import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
 import { makeProfileLinksURL } from "#/lib/urls.ts";
+import { clean } from "#/lib/ammonia.ts";
 
 export function makeLinksAPIHandler(
   kv: Deno.Kv,
@@ -95,8 +96,8 @@ function parseProfileLinkFormData(formData: FormData): ProfileLink {
   }
 
   return {
-    url: url.toString(),
-    title: title.toString(),
-    iconURL: iconURL.toString(),
+    url: clean(url.toString()),
+    title: clean(title.toString()),
+    iconURL: clean(iconURL.toString()),
   };
 }
