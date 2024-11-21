@@ -1,6 +1,5 @@
 import type { Handler } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
-import { Asset, Assets } from "@fartlabs/jsonx/std/assets";
 import type { Profile } from "#/lib/profile.ts";
 import { makeProfileURL } from "#/lib/urls.ts";
 import { subhosting } from "#/lib/subhosting.ts";
@@ -10,6 +9,7 @@ import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
 import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
 import { getProjectByProfileID } from "#/lib/kv/get-project-by-profile-id.ts";
 import { setProjectByProfileID } from "#/lib/kv/set-project-by-profile-id.ts";
+import { ProjectAssets } from "#/lib/project-assets.tsx";
 
 /**
  * makeProfilesPOSTRequestHandler makes an endpoint for creating or updating a
@@ -113,15 +113,7 @@ export function makeProfilesPOSTRequestHandler(
       throw new Error("Project not found");
     }
 
-    const { assets } = (
-      <Assets>
-        <Asset
-          path="./main.ts"
-          content="Deno.serve((req) => new Response('Hello, world!'));"
-        />
-      </Assets>
-    );
-
+    const { assets } = <ProjectAssets profile={newProfile} />;
     const deployment = await subhosting.projects.deployments.create(
       project.value.id,
       {
