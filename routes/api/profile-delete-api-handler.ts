@@ -5,6 +5,9 @@ import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
 import { deleteProfileByProfileID } from "#/lib/kv/delete-profile-by-profile-id.ts";
 import { makeUserURL } from "#/lib/urls.ts";
 import { setUserByGitHubUserID } from "#/lib/kv/set-user-by-github-user-id.ts";
+import { subhosting } from "#/lib/subhosting.ts";
+import { getProjectByProfileID } from "#/lib/kv/get-project-by-profile-id.ts";
+import { deleteProjectByProfileID } from "#/lib/kv/delete-project-by-profile-id.ts";
 
 export function makeProfileDeleteAPIHandler(
   kv: Deno.Kv,
@@ -45,7 +48,12 @@ export function makeProfileDeleteAPIHandler(
         .filter((id) => id !== profileID),
     });
 
-    // TODO: Delete the associated Deno Deploy project.
+    // Delete the associated Deno Deploy project.
+    const project = await getProjectByProfileID(kv, profileID);
+    if (project.value !== null) {
+      await subhosting.projects.delete(project.value.id);
+      await deleteProjectByProfileID(kv, profileID);
+    }
 
     await deleteProfileByProfileID(kv, profileID);
 
