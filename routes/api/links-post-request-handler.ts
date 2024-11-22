@@ -47,22 +47,18 @@ export function makeLinksPOSTRequestHandler(
     const formData = await request.formData();
     const profileLink = parseProfileLinkFormData(formData);
     if (profileLink === null) {
-      // TODO: Fix bug.
-      console.log("Bad request", { profileLink });
       return new Response("Bad request", { status: 400 });
     }
 
     // Get the link index from the request.
-    const index = params?.pathname?.groups?.index;
+    const indexString = params?.pathname?.groups?.index;
     const profileLinks = profile.value.links ?? [];
-    if (index === undefined) {
+    if (!indexString) {
       // Add the link at the end of the list.
       profileLinks.push(profileLink);
     } else {
-      const indexNumber = parseInt(index, 10);
+      const indexNumber = parseInt(indexString, 10);
       if (isNaN(indexNumber)) {
-        // TODO: Fix bug.
-        console.log("Bad request", { index });
         return new Response("Bad request", { status: 400 });
       }
 
