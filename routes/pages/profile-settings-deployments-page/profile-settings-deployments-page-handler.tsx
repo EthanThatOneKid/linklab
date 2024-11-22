@@ -47,6 +47,7 @@ export function makeProfileSettingDeploymentsPageHandler(
 
     const deployments = await subhosting.projects.deployments.list(
       project.value.id,
+      { order: "desc" },
     );
     return new Response(
       <ProfileSettingsDeploymentsPage

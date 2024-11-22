@@ -1,4 +1,15 @@
-import { A, DIV, H3, LI, P, SECTION, STRONG, UL } from "@fartlabs/htx";
+import {
+  A,
+  CODE,
+  DIV,
+  H3,
+  LI,
+  P,
+  SECTION,
+  SMALL,
+  TIME,
+  UL,
+} from "@fartlabs/htx";
 import { renderStyle } from "@fartlabs/htx/render";
 import type { Deployment } from "subhosting/resources/shared";
 import type { Profile } from "#/lib/profile.ts";
@@ -35,11 +46,14 @@ export function ProfileSettingsDeploymentsPage(
               showcase your projects.
             </P>
 
-            {props.deployments.length === 0
-              ? <P>No deployments yet.</P>
-              : (
-                <UL style={renderStyle({ "list-style-type": "none" })}>
-                  {props.deployments.map((deployment) => (
+            {props.deployments.length === 0 ? <P>No deployments yet.</P> : (
+              <UL
+                style={renderStyle({ "padding-left": "0" })}
+              >
+                {props.deployments.map((deployment) => {
+                  const domain = deployment.domains?.at(0);
+                  const previewURL = `https://${domain}`;
+                  return (
                     <LI
                       style={renderStyle({
                         display: "flex",
@@ -48,16 +62,20 @@ export function ProfileSettingsDeploymentsPage(
                       })}
                     >
                       <DIV>
-                        <P>
-                          <A href={`https://${deployment.domains?.at(0)}`}>
-                            <STRONG>{deployment.id}</STRONG>
-                          </A>
-                        </P>
+                        <A href={previewURL}>
+                          <CODE>{deployment.id}</CODE>
+                        </A>{" "}
+                        <SMALL>
+                          <TIME datetime={deployment.createdAt}>
+                            {new Date(deployment.createdAt).toLocaleString()}
+                          </TIME>
+                        </SMALL>
                       </DIV>
                     </LI>
-                  ))}
-                </UL>
-              )}
+                  );
+                })}
+              </UL>
+            )}
           </DIV>
         </SettingsLayout>
       </SECTION>

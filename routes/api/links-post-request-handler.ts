@@ -7,6 +7,7 @@ import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
 import { makeLinksURL } from "#/lib/urls.ts";
 import { clean } from "#/lib/ammonia.ts";
 import { createDeployment } from "#/lib/create-deployment.tsx";
+import { getProjectByProfileID } from "#/lib/kv/get-project-by-profile-id.ts";
 
 export function makeLinksPOSTRequestHandler(
   kv: Deno.Kv,
@@ -71,7 +72,14 @@ export function makeLinksPOSTRequestHandler(
       return new Response("Internal server error", { status: 500 });
     }
 
-    await createDeployment(profile.value.id, newProfile);
+    // Deploy the updated profile.
+    const project = await getProjectByProfileID(kv, profileID);
+    if (project.value === null) {
+      throw new Error("Project not found");
+    }
+
+    await createDeployment(project.value.id, newProfile);
+
     return new Response(null, {
       status: 303,
       headers: new Headers({ Location: makeLinksURL(profileID) }),
