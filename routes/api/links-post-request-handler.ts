@@ -47,6 +47,8 @@ export function makeLinksPOSTRequestHandler(
     const formData = await request.formData();
     const profileLink = parseProfileLinkFormData(formData);
     if (profileLink === null) {
+      // TODO: Fix bug.
+      console.log("Bad request", { profileLink });
       return new Response("Bad request", { status: 400 });
     }
 
@@ -59,6 +61,8 @@ export function makeLinksPOSTRequestHandler(
     } else {
       const indexNumber = parseInt(index, 10);
       if (isNaN(indexNumber)) {
+        // TODO: Fix bug.
+        console.log("Bad request", { index });
         return new Response("Bad request", { status: 400 });
       }
 
