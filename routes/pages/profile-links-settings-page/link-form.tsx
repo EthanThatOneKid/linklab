@@ -10,7 +10,7 @@ import {
   SPAN,
 } from "@fartlabs/htx";
 import type { Profile } from "#/lib/profile.ts";
-import { API_PREFIX, makeProfileLinkURL } from "#/lib/urls.ts";
+import { API_PREFIX, makeLinkURL } from "#/lib/urls.ts";
 
 interface LinkFormProps {
   profile: Profile;
@@ -24,7 +24,7 @@ export function LinkForm(props: LinkFormProps) {
       <FORM
         method="POST"
         action={API_PREFIX +
-          makeProfileLinkURL(props.profile.id, props.index.toString())}
+          makeLinkURL(props.profile.id, props.index.toString())}
       >
         <LABEL for="url">
           <SPAN class="required">
@@ -62,7 +62,7 @@ export function LinkForm(props: LinkFormProps) {
         <BUTTON
           formmethod="POST"
           formaction={API_PREFIX +
-            makeProfileLinkURL(props.profile.id, props.index.toString()) +
+            makeLinkURL(props.profile.id, props.index.toString()) +
             "/delete"}
           class="fart-button"
         >
@@ -75,7 +75,7 @@ export function LinkForm(props: LinkFormProps) {
           <FORM
             method="POST"
             action={API_PREFIX +
-              makeProfileLinkURL(
+              makeLinkURL(
                 props.profile.id,
                 props.index.toString() + "/move",
               )}

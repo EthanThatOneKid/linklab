@@ -1,7 +1,11 @@
-import { makeProfileLinksURL, makeProfileURL } from "#/lib/urls.ts";
+import {
+  makeDeploymentsURL,
+  makeLinksURL,
+  makeProfileURL,
+} from "#/lib/urls.ts";
 
 export function makeSettingsTabs(
-  activeTab: "general" | "links",
+  activeTab: SettingsTabType,
   profileID: string,
 ): SettingsTab[] {
   return [
@@ -11,9 +15,14 @@ export function makeSettingsTabs(
       isActive: activeTab === "general",
     },
     {
-      href: makeProfileLinksURL(profileID),
+      href: makeLinksURL(profileID),
       content: "Manage links",
       isActive: activeTab === "links",
+    },
+    {
+      href: makeDeploymentsURL(profileID),
+      content: "Deployments",
+      isActive: activeTab === "deployments",
     },
   ];
 }
@@ -23,3 +32,11 @@ export interface SettingsTab {
   content: string;
   isActive?: boolean;
 }
+
+export type SettingsTabType = typeof settingsTabs[number];
+
+export const settingsTabs = [
+  "general",
+  "links",
+  "deployments",
+] as const;

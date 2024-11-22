@@ -8,14 +8,25 @@ export function makeProfileURL(profileID: string): string {
   return `${makeProfilesURL()}/${profileID}`;
 }
 
-export function makeProfileLinksURL(profileID: string): string {
+export function makeLinksURL(profileID: string): string {
   return `${makeProfileURL(profileID)}/links`;
 }
 
-export function makeProfileLinkURL(profileID: string, linkID?: string): string {
-  return `${makeProfileLinksURL(profileID)}${
+export function makeLinkURL(profileID: string, linkID?: string): string {
+  return `${makeLinksURL(profileID)}${
     linkID !== undefined ? `/${linkID}` : ""
   }`;
+}
+
+export function makeDeploymentsURL(profileID: string): string {
+  return `${makeProfileURL(profileID)}/deployments`;
+}
+
+export function makeDeploymentURL(
+  profileID: string,
+  deploymentID: string,
+): string {
+  return `${makeDeploymentsURL(profileID)}/${deploymentID}`;
 }
 
 export function makeUsersURL(): string {

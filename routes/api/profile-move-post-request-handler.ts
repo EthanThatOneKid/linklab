@@ -3,7 +3,7 @@ import type { Helpers } from "@deno/kv-oauth";
 import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
 import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
-import { makeProfileLinksURL } from "#/lib/urls.ts";
+import { makeLinksURL } from "#/lib/urls.ts";
 
 /**
  * makeProfileMovePOSTRequestHandler makes an endpoint for move a profile link
@@ -70,7 +70,7 @@ export function makeProfileMovePOSTRequestHandler(
 
     return new Response(null, {
       status: 303,
-      headers: new Headers({ Location: makeProfileLinksURL(profileID) }),
+      headers: new Headers({ Location: makeLinksURL(profileID) }),
     });
   };
 }

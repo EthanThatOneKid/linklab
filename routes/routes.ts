@@ -7,9 +7,10 @@ import { makeProfileDELETERequestHandler } from "./api/profile-delete-request-ha
 import { makeLinkDELETERequestHandler } from "./api/link-delete-request-handler.ts";
 import { makeProfileMovePOSTRequestHandler } from "./api/profile-move-post-request-handler.ts";
 import { makeLandingPageHandler } from "./pages/landing-page/landing-page-handler.tsx";
-import { makeProfileLinksSettingsPageHandler } from "./pages/profile-links-settings-page/profile-links-settings-page-handler.tsx";
-import { makeProfileGeneralSettingsPageHandler } from "./pages/profile-general-settings-page/profile-general-settings-page-handler.tsx";
 import { makeUserPageHandler } from "./pages/user-page/user-page-handler.tsx";
+import { makeProfileGeneralSettingsPageHandler } from "./pages/profile-general-settings-page/profile-general-settings-page-handler.tsx";
+import { makeProfileLinksSettingsPageHandler } from "./pages/profile-links-settings-page/profile-links-settings-page-handler.tsx";
+import { makeProfileSettingDeploymentsPageHandler } from "./pages/profile-settings-deployments-page/profile-settings-deployments-page-handler.tsx";
 
 /**
  * makeLinklabRoutes makes an array of Routes for Linklab.
@@ -64,7 +65,6 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
       }),
       handler: makeLinkDELETERequestHandler(kv, helpers),
     },
-    // - GET /api/profiles/:id/deployments gets a list of deployments
     // - GET /api/profiles/:id/deployments/:deployment-id gets a deployment
     // - GET /api/profiles/:id/deployments/:deployment-id/logs gets deployment logs
     //
@@ -83,6 +83,12 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
       pattern: new URLPattern({ pathname: "/profiles/:id/links" }),
       handler: makeProfileLinksSettingsPageHandler(kv, helpers),
     },
+    {
+      method: "GET",
+      pattern: new URLPattern({ pathname: "/profiles/:id/deployments" }),
+      handler: makeProfileSettingDeploymentsPageHandler(kv, helpers),
+    },
+
     {
       method: "GET",
       pattern: new URLPattern({ pathname: "/users/:login" }),

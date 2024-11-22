@@ -1,5 +1,5 @@
 import { BR, BUTTON, DIV, FORM, INPUT, LABEL, SPAN } from "@fartlabs/htx";
-import { API_PREFIX, makeProfileLinksURL } from "#/lib/urls.ts";
+import { API_PREFIX, makeLinksURL } from "#/lib/urls.ts";
 
 interface LinkFormAddProps {
   /**
@@ -13,7 +13,7 @@ export function LinkFormAdd(props: LinkFormAddProps) {
     <DIV>
       <FORM
         method="POST"
-        action={API_PREFIX + makeProfileLinksURL(props.parentID)}
+        action={API_PREFIX + makeLinksURL(props.parentID)}
       >
         <LABEL for="url">
           <SPAN class="required">Link URL</SPAN>{" "}
