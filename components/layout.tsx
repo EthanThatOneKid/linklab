@@ -3,6 +3,7 @@ import {
   BODY,
   BR,
   FOOTER,
+  HEAD,
   HR,
   HTML,
   LINK,
@@ -15,6 +16,8 @@ import {
 export interface LayoutProps {
   title?: string;
   description?: string;
+  head?: string;
+  useCssLibs?: boolean;
   children?: string[];
 }
 
@@ -24,16 +27,24 @@ const defaultPageDescription = "Your link-in-bio page.";
 export function Layout(props: LayoutProps) {
   return (
     <HTML>
-      <META charset="utf-8" />
-      <META name="viewport" content="width=device-width, initial-scale=1" />
-      <LINK rel="icon" href="https://fartlabs.org/fl-logo.png" />
-      <TITLE>{props.title ?? defaultPageTitle}</TITLE>
-      <META
-        name="description"
-        content={props.description ?? defaultPageDescription}
-      />
-      <LINK rel="stylesheet" href="https://css.fart.tools/fart.css" />
-      <LINK rel="stylesheet" href="/static/linklab.css" />
+      <HEAD>
+        <META charset="utf-8" />
+        <META name="viewport" content="width=device-width, initial-scale=1" />
+        <LINK rel="icon" href="https://fartlabs.org/fl-logo.png" />
+        <TITLE>{props.title ?? defaultPageTitle}</TITLE>
+        <META
+          name="description"
+          content={props.description ?? defaultPageDescription}
+        />
+        {props.useCssLibs ?? true
+          ? <LINK rel="stylesheet" href="https://css.fart.tools/fart.css" /> + (
+            <LINK rel="stylesheet" href="/static/linklab.css" />
+          )
+          : ""}
+
+        {props.head ?? ""}
+      </HEAD>
+
       <BODY>
         {(props.children ?? []).join("")}
         <Footer />

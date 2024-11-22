@@ -4,13 +4,13 @@ import { subhosting } from "#/lib/subhosting.ts";
 import { clean } from "#/lib/ammonia.ts";
 import type { Profile } from "#/lib/profile.ts";
 import { makeProfileURL } from "#/lib/urls.ts";
-import { ProjectAssets } from "#/lib/project-assets.tsx";
 import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { addProfileByGitHubUserID } from "#/lib/kv/add-profile-by-github-user-id.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
 import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
 import { getProjectByProfileID } from "#/lib/kv/get-project-by-profile-id.ts";
 import { setProjectByProfileID } from "#/lib/kv/set-project-by-profile-id.ts";
+import { createDeployment } from "#/lib/create-deployment.tsx";
 
 /**
  * makeProfilesPOSTRequestHandler makes an endpoint for creating or updating a
@@ -114,17 +114,7 @@ export function makeProfilesPOSTRequestHandler(
       throw new Error("Project not found");
     }
 
-    const { assets } = <ProjectAssets profile={newProfile} />;
-    const deployment = await subhosting.projects.deployments.create(
-      project.value.id,
-      {
-        entryPointUrl: "./main.ts",
-        envVars: {},
-        assets,
-      },
-    );
-    console.log({ deployment, assets, project });
-
+    await createDeployment(project.value.id, newProfile);
     return new Response(null, {
       status: 303,
       headers: new Headers({ Location: makeProfileURL(profile.id) }),

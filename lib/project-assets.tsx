@@ -1,5 +1,6 @@
 import { Asset, Assets } from "@fartlabs/jsonx/std/assets";
 import type { Profile } from "#/lib/profile.ts";
+import { ProfilePage } from "#/components/profile-page.tsx";
 
 export interface ProjectAssetsProps {
   profile: Profile;
@@ -20,7 +21,11 @@ if (import.meta.main) {
       {/* TODO: Replace content with profile page component. */}
       <Asset
         path="./index.html"
-        content={`<h1>Hello, @${props.profile.id}!</h1>`}
+        content={<ProfilePage profile={props.profile} />}
+      />
+      <Asset
+        path="./profile.json"
+        content={JSON.stringify(props.profile)}
       />
     </Assets>
   );
