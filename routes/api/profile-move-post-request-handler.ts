@@ -4,6 +4,8 @@ import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
 import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
 import { makeLinksURL } from "#/lib/urls.ts";
+import { createDeployment } from "#/lib/create-deployment.tsx";
+import { getProjectByProfileID } from "#/lib/kv/get-project-by-profile-id.ts";
 
 /**
  * makeProfileMovePOSTRequestHandler makes an endpoint for move a profile link
@@ -67,6 +69,14 @@ export function makeProfileMovePOSTRequestHandler(
     profile.value.links.splice(index, 1);
     profile.value.links.splice(newIndex, 0, link);
     await setProfileByProfileID(kv, profile.value);
+
+    // Create a deployment for the profile.
+    const project = await getProjectByProfileID(kv, profileID);
+    if (project.value === null) {
+      return new Response("Internal server error", { status: 500 });
+    }
+
+    await createDeployment(project.value.id, profile.value);
 
     return new Response(null, {
       status: 303,

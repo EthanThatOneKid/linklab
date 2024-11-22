@@ -1,11 +1,12 @@
 import type { Handler } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
-import type { ProfileLink } from "#/lib/profile.ts";
+import type { Profile, ProfileLink } from "#/lib/profile.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
 import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
 import { makeLinksURL } from "#/lib/urls.ts";
 import { clean } from "#/lib/ammonia.ts";
+import { createDeployment } from "#/lib/create-deployment.tsx";
 
 export function makeLinksPOSTRequestHandler(
   kv: Deno.Kv,
@@ -64,14 +65,13 @@ export function makeLinksPOSTRequestHandler(
       profileLinks[indexNumber] = profileLink;
     }
 
-    const result = await setProfileByProfileID(kv, {
-      ...profile.value,
-      links: profileLinks,
-    });
+    const newProfile: Profile = { ...profile.value, links: profileLinks };
+    const result = await setProfileByProfileID(kv, newProfile);
     if (!result.ok) {
       return new Response("Internal server error", { status: 500 });
     }
 
+    await createDeployment(profile.value.id, newProfile);
     return new Response(null, {
       status: 303,
       headers: new Headers({ Location: makeLinksURL(profileID) }),

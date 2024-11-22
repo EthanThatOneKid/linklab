@@ -1,9 +1,12 @@
 import type { Handler } from "@std/http";
 import type { Helpers } from "@deno/kv-oauth";
+import type { Profile } from "#/lib/profile.ts";
+import { makeProfileURL } from "#/lib/urls.ts";
+import { createDeployment } from "#/lib/create-deployment.tsx";
 import { getUserBySessionID } from "#/lib/kv/get-user-by-session-id.ts";
 import { getProfileByProfileID } from "#/lib/kv/get-profile-by-profile-id.ts";
-import { makeProfileURL } from "#/lib/urls.ts";
 import { setProfileByProfileID } from "#/lib/kv/set-profile-by-profile-id.ts";
+import { getProjectByProfileID } from "#/lib/kv/get-project-by-profile-id.ts";
 
 export function makeLinkDELETERequestHandler(
   kv: Deno.Kv,
@@ -48,10 +51,19 @@ export function makeLinkDELETERequestHandler(
     }
 
     // Delete the link from the profile.
-    await setProfileByProfileID(kv, {
+    const newProfile: Profile = {
       ...profile.value,
       links: profile.value.links.filter((_, i) => i !== index),
-    });
+    };
+    await setProfileByProfileID(kv, newProfile);
+
+    // Deploy the updated profile.
+    const project = await getProjectByProfileID(kv, profileID);
+    if (project.value === null) {
+      return new Response("Internal server error", { status: 500 });
+    }
+
+    await createDeployment(project.value.id, newProfile);
 
     // Redirect to user page.
     return new Response(null, {
