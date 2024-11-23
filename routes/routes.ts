@@ -11,6 +11,7 @@ import { makeUserPageHandler } from "./pages/user-page/user-page-handler.tsx";
 import { makeProfileGeneralSettingsPageHandler } from "./pages/profile-general-settings-page/profile-general-settings-page-handler.tsx";
 import { makeProfileLinksSettingsPageHandler } from "./pages/profile-links-settings-page/profile-links-settings-page-handler.tsx";
 import { makeProfileSettingDeploymentsPageHandler } from "./pages/profile-settings-deployments-page/profile-settings-deployments-page-handler.tsx";
+import { makeProfilePreviewPageHandler } from "#/routes/pages/profile-preview-page-handler.tsx";
 
 /**
  * makeLinklabRoutes makes an array of Routes for Linklab.
@@ -88,7 +89,11 @@ export function makeLinklabRoutes(kv: Deno.Kv, helpers: Helpers): Route[] {
       pattern: new URLPattern({ pathname: "/profiles/:id/deployments" }),
       handler: makeProfileSettingDeploymentsPageHandler(kv, helpers),
     },
-
+    {
+      method: "GET",
+      pattern: new URLPattern({ pathname: "/profiles/:id/preview" }),
+      handler: makeProfilePreviewPageHandler(kv, helpers),
+    },
     {
       method: "GET",
       pattern: new URLPattern({ pathname: "/users/:login" }),

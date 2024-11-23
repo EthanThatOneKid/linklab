@@ -1,19 +1,46 @@
-import { A, H1, IMG, LI, MAIN, P, STYLE, UL } from "@fartlabs/htx";
-import type { Profile } from "#/lib/profile.ts";
-import { Layout } from "#/components/layout.tsx";
+import {
+  A,
+  BODY,
+  H1,
+  HEAD,
+  HTML,
+  IMG,
+  LI,
+  LINK,
+  MAIN,
+  META,
+  P,
+  STYLE,
+  TITLE,
+  UL,
+} from "@fartlabs/htx";
 import { renderStyle } from "@fartlabs/htx/render";
+import type { Profile } from "#/lib/profile.ts";
 
 export interface ProfilePageProps {
   profile: Profile;
 }
 
 export function ProfilePage(props: ProfilePageProps) {
-  const presentationTitle = props.profile.title ?? `@${props.profile.id}`;
+  const title = props.profile.title ?? `@${props.profile.id}`;
+  const iconHref = props.profile.iconURL ?? "https://fartlabs.org/fl-logo.png";
+
   return (
-    <Layout
-      title={presentationTitle}
-      description={props.profile.description}
-      head={
+    <HTML>
+      <HEAD>
+        <META charset="utf-8" />
+        <META name="viewport" content="width=device-width, initial-scale=1" />
+        <LINK rel="icon" href={iconHref} />
+        <TITLE>{title}</TITLE>
+        {props.profile.description !== undefined
+          ? (
+            <META
+              name="description"
+              content={props.profile.description}
+            />
+          )
+          : ""}
+
         <STYLE>
           {`body {${
             renderStyle({
@@ -27,40 +54,42 @@ export function ProfilePage(props: ProfilePageProps) {
             })
           }}`}
         </STYLE>
-      }
-    >
-      <MAIN class="fart-section">
-        {props.profile.iconURL
-          ? <IMG src={props.profile.iconURL} alt="Profile icon" />
-          : ""}
-        <H1>{presentationTitle}</H1>
+      </HEAD>
 
-        {props.profile.description !== undefined
-          ? <P>{props.profile.description}</P>
-          : ""}
+      <BODY>
+        <MAIN class="fart-section">
+          {props.profile.iconURL
+            ? <IMG src={props.profile.iconURL} alt="Profile icon" />
+            : ""}
+          <H1>{title}</H1>
 
-        {props.profile.links.length === 0
-          ? <P>Add links to your portfolio.</P>
-          : (
-            <UL style={renderStyle({ "list-style-type": "none" })}>
-              {props.profile.links.map((link) => (
-                <LI style={renderStyle({ "margin-bottom": "1rem" })}>
-                  {link.iconURL
-                    ? (
-                      <IMG
-                        src={link.iconURL}
-                        alt="Link icon"
-                        width="24"
-                        height="24"
-                      />
-                    )
-                    : ""}
-                  <A href={link.url}>{link.title}</A>
-                </LI>
-              ))}
-            </UL>
-          )}
-      </MAIN>
-    </Layout>
+          {props.profile.description !== undefined
+            ? <P>{props.profile.description}</P>
+            : ""}
+
+          {props.profile.links.length === 0
+            ? <P>Add links to your portfolio.</P>
+            : (
+              <UL>
+                {props.profile.links.map((link) => (
+                  <LI style={renderStyle({ "margin-bottom": "1rem" })}>
+                    {link.iconURL
+                      ? (
+                        <IMG
+                          src={link.iconURL}
+                          alt="Link icon"
+                          width="24"
+                          height="24"
+                        />
+                      )
+                      : ""}
+                    <A href={link.url}>{link.title}</A>
+                  </LI>
+                ))}
+              </UL>
+            )}
+        </MAIN>
+      </BODY>
+    </HTML>
   );
 }
