@@ -18,7 +18,6 @@ if (import.meta.main) {
 }
 `}
       />
-      {/* TODO: Replace content with profile page component. */}
       <Asset
         path="./index.html"
         content={<ProfilePage profile={props.profile} />}

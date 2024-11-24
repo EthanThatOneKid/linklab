@@ -10,6 +10,7 @@
     "@deno/kv-oauth": "jsr:@deno/kv-oauth@^0.11.0",
     "@fartlabs/htx": "jsr:@fartlabs/htx@^0.0.9",
     "@fartlabs/jsonx": "jsr:@fartlabs/jsonx@^0.0.11",
+    "@kitsonk/ga4": "jsr:@kitsonk/ga4@^0.1.0",
     "@std/http": "jsr:@std/http@^1.0.9",
     "@std/text": "jsr:@std/text@^1.0.8",
     "subhosting": "npm:subhosting@^0.1.0-alpha.1",
